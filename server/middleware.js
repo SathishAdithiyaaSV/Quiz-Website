@@ -1,19 +1,22 @@
-const JWT_SECRET = "secret";
+// middlewares/authMiddleware.js
 import jwt from 'jsonwebtoken';
+import User from './User.js';
 
+const authMiddleware = async (req, res, next) => {
+    try {
+        const token = req.header('Authorization').replace('Bearer ', '');
+        const decoded = jwt.verify(token, 'your_secret_key'); // Replace with your secret key
 
-module.exports = {
-    auth: (req, res, next) => {
-        const authHeader = req.headers["authorization"];
-        if (!authHeader) {
-            return res.status(403).json({msg: "Missing auth header"});
+        const user = await User.findOne({ _id: decoded.id });
+        if (!user) {
+            throw new Error();
         }
-        const decoded = jwt.verify(authHeader, JWT_SECRET);
-        if (decoded && decoded.id) {
-            req.userId = decoded.id;
-            next()
-        } else {
-            return res.status(403).json({msg: "Incorrect token"});
-        }
+
+        req.user = user;
+        next();
+    } catch (error) {
+        res.status(401).json({ error: 'Authentication failed' });
     }
-}
+};
+
+export default authMiddleware;
