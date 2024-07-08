@@ -30,16 +30,19 @@ mongoose.connect('mongodb://localhost:27017/mydatabase', {
 
 // Signup route
 app.post('/signup', async (req, res) => {
-  console.log(req.body)
     try {
-        let user = await User.findOne({ email: req.body.email });
-        if (user) {
-            return res.status(403).json({ message: 'User already exists' });
+        let user_username = await User.findOne({ username: req.body.username });
+        let user_email = await User.findOne({ email: req.body.email });
+        if (user_email) {
+            return res.status(403).json({ message: 'User already exists, please log in' });
+        }
+        else if (user_username) {
+            return res.status(403).json({ message: 'Username already exists, try using a different one' });
         }
 
-        const { name, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 5);
-        user = new User({ name, email, password: hashedPassword });
+        const { username, email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        let user = new User({ username, email, password: hashedPassword });
         await user.save();
         return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
@@ -70,8 +73,8 @@ app.post('/signup', async (req, res) => {
 // Login route
 app.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
