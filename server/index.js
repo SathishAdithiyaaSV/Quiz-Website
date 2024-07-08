@@ -6,17 +6,26 @@ import jwt from 'jsonwebtoken';
 import User from './User.js'; // Assuming you have a User model defined
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { createServer } from 'node:http';
+import { Server } from 'socket.io';
 
 import authMiddleware from './middleware.js';
 
 const app = express();
 const port = 3000;
-const USERS = [];
-let USER_ID_COUNTER = 1;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  }
+});
+
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/mydatabase', {
@@ -51,25 +60,6 @@ app.post('/signup', async (req, res) => {
 });
 
 
-/*app.post("/signup", (req, res) => {
-  console.log(req.body);
-  const email = req.body.email;
-  const password = req.body.password;
-  if (USERS.find((x) => x.email === email)) {
-    return res.status(403).json({ msg: "Email already exists" });
-  }
-
-  USERS.push({
-    email,
-    password,
-    id: USER_ID_COUNTER++,
-  });
-
-  return res.json({
-    msg: "Success",
-  });
-});
-*/
 // Login route
 app.post('/login', async (req, res) => {
     try {
@@ -97,6 +87,10 @@ app.get('/profile', authMiddleware, (req, res) => {
     res.json(req.user);
 });
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+  console.log(socket);
+});
+
+server.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
