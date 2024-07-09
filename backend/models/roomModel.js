@@ -6,7 +6,7 @@ const roomSchema = new mongoose.Schema({
     teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     rounds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Round', required: true}],
-    settings: { type: mongoose.Schema.Types.ObjectId, ref: 'Settings', required: true},
+    settings: { type: mongoose.Schema.Types.ObjectId, ref: 'Settings' },
 });
 
 export default mongoose.model('Room', roomSchema);

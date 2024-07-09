@@ -5,6 +5,10 @@ const teamSchema = new mongoose.Schema({
     admin: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
     room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
+    answeredCorrectly: { type: mongoose.Schema.Types.ObjectId, ref: 'Question' },
+    answeredIncorrectly: { type: mongoose.Schema.Types.ObjectId, ref: 'Question' },
+    notAttempted: { type: mongoose.Schema.Types.ObjectId, ref: 'Question' },
+    points: { type: double }
 });
 
 export default mongoose.model('Team', teamSchema);
