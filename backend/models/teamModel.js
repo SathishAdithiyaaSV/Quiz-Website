@@ -8,7 +8,7 @@ const teamSchema = new mongoose.Schema({
     answeredCorrectly: { type: mongoose.Schema.Types.ObjectId, ref: 'Question' },
     answeredIncorrectly: { type: mongoose.Schema.Types.ObjectId, ref: 'Question' },
     notAttempted: { type: mongoose.Schema.Types.ObjectId, ref: 'Question' },
-    points: { type: double }
+    points: { type: Number }
 });
 
 export default mongoose.model('Team', teamSchema);

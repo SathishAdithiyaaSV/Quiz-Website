@@ -3,12 +3,12 @@ import { boolean } from 'webidl-conversions';
 
 const settingsSchema = new mongoose.Schema({
     time: { type: String },
-    points: { type: double},
-    buzzer: { type: boolean },
-    answerOnBuzz : { type: boolean },
-    answerAfterTime : { type: boolean },
+    points: { type: Number},
+    buzzer: { type: Boolean },
+    answerOnBuzz : { type: Boolean },
+    answerAfterTime : { type: Boolean },
     timeAfterBuzz : { type: String },
-    equalPointsOnCorrectAnswer : { type: boolean },
+    equalPointsOnCorrectAnswer : { type: Boolean },
     //room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
 });
 

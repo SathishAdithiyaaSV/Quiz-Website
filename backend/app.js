@@ -5,7 +5,9 @@ import cors from 'cors';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import authRoutes from './routes/authRoutes.js';
+import roomRoutes from './routes/roomRoutes.js';
 import { handleSocketConnection } from './sockets/socketHandler.js';
+import socketAuthMiddleware from './middlewares/socketAuth.js';
 
 const app = express();
 
@@ -21,6 +23,7 @@ const io = new Server(server, {
   }
 });
 
+io.use(socketAuthMiddleware);
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/mydatabase', {
@@ -33,7 +36,7 @@ mongoose.connect('mongodb://localhost:27017/mydatabase', {
 });
 
 app.use('/api/auth', authRoutes);
-//app.use('/api/rooms', roomsRoutes);
+app.use('/api/rooms', roomRoutes);
 
 io.on('connection', handleSocketConnection);
 
