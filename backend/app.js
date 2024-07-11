@@ -41,3 +41,4 @@ app.use('/api/rooms', roomRoutes);
 io.on('connection', handleSocketConnection);
 
 export default server;
+export { io };

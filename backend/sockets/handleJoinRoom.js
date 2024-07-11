@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import Room from "../models/roomModel.js";
 import Team from "../models/teamModel.js";
 import { userSocketMap } from "./socketHandler.js";
+import { io } from "../app.js";
 
 export const handleJoinRoom = async (socket, team) => {
     const { roomName, teamName, users } = JSON.parse(team);
@@ -24,22 +25,17 @@ export const handleJoinRoom = async (socket, team) => {
         }
     }
 
-    var member;
-    for(member of members)
-    {
-        if(userSocketMap[member]!==socket.user.username)
-            io.to(userSocketMap[member]).emit('requestToJoinTeam', `Do you want to join team ${teamName}`)
-    }
 
     const room = await Room.findOne({ name: roomName });
     if (!room) {
         io.to(socket._id).emit('privateMessage', "Room does not exist");
         return;
     }
-
-    team = await Team({name: teamName, admin: admin, mambers: members, room: room});
-    team = await team.save();
-    room.teams.push(team._id);
+    team = new Team({name: teamName, admin: admin, members: members, room: room});
+    let newTeam = await team.save();
+    await Room.updateOne({_id: room._id}, {$push : {teams: newTeam._id}});
+    console.log("team saved");
+    io.to(socket.id).emit('privateMessage', "Team saved successfully and added to room");
     
             
     /*const username = socket.user.username;
