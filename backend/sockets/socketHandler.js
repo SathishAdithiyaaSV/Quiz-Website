@@ -3,6 +3,8 @@ import User from "../models/userModel.js";
 import Room from "../models/roomModel.js";
 import Team from "../models/teamModel.js";
 import { handleJoinRoom } from "./handleJoinRoom.js";
+import { handleShowRules } from "./handleShowRules.js";
+import { handleShowNextQn } from "./handleShowNextQn.js";
 
 const userSocketMap = new Map();
 
@@ -27,10 +29,29 @@ export const handleSocketConnection = async (socket) => {
         handleJoinRoom(socket, roomId);
     });
 
+    socket.on('showRules', (details) => {
+        handleShowRules(socket, details);
+    });
+
+    socket.on('showNextQn', (details) => {
+        handleShowNextQn(socket, details);
+    });
+
+    socket.on('buzzIn', (details) => {
+        handleBuzzIn(socket, details);
+    });
+
+    socket.on('submitAnswer', (details) => {
+        handleSubmitAnswer(socket, details);
+    });
+
+
     socket.on('leaveRoom', (roomId) => {
         socket.leave(roomId);
         console.log(`Client ${socket.id} left room ${roomId}`);
     });
+
+
 
     socket.on('disconnect', () => {
         console.log('Client disconnected:', socket.id);
