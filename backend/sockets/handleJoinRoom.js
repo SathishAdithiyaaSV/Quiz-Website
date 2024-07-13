@@ -35,11 +35,16 @@ export const handleJoinRoom = async (socket, team) => {
     let newTeam = await team.save();
     await Room.updateOne({_id: room._id}, {$push : {teams: newTeam._id}});
     console.log("team saved");
+
+    var member;
+    for (member of members)
+    {
+        let memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
+//        console.log(memberSocket.id);
+        memberSocket.join(roomName);
+    }
     io.to(socket.id).emit('privateMessage', "Team saved successfully and added to room");
     
             
-    /*const username = socket.user.username;
-    socket.join(roomId);
-    console.log(`Client ${username} joined room ${roomId}`);
-    */
+
 };
