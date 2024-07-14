@@ -16,6 +16,6 @@ export const handleShowRules = async (socket, details) => {
 
     const qn = await Question.findById(room.rounds[round+1].questions[qnNo +1 ].toString());
     const team = await Team.findOne({ name: teamName });
-    await Question.updateOne({_id: qn._id}, {$set : {buzzedIn: team._id}});
+    await Question.updateOne({_id: qn._id}, {$set : {buzzedIn: team._id, buzzNo: qn.buzzNo + 1 }});
     io.in(roomName).emit('buzzedIn', {team: team, qn: qn});
 }

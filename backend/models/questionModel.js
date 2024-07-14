@@ -6,6 +6,7 @@ const questionSchema = new mongoose.Schema({
     options: [String], // Only required for multiple-choice questions
     buzzedInQueue: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
     buzzedIn: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
+    buzzNo: { type: Number },
     answer: { type: String, required: true },
     settings: { type: mongoose.Schema.Types.ObjectId, ref: 'Settings' },
 });

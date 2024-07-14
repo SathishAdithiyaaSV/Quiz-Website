@@ -7,8 +7,16 @@ const settingsSchema = new mongoose.Schema({
     buzzer: { type: Boolean },
     answerOnBuzz : { type: Boolean },
     answerAfterTime : { type: Boolean },
-    timeAfterBuzz : { type: String },
+    timeAfterFirstBuzz : { type: String },
+    timeAfterSecondBuzz : { type: String },
+    timeAfterThirdBuzz : { type: String },
     equalPointsOnCorrectAnswer : { type: Boolean },
+    firstBuzzAnsweredCorrect: { type: Number },
+    firstBuzzAnsweredIncorrect: { type: Number },
+    secondBuzzAnsweredCorrect: { type: Number },
+    secondBuzzAnsweredIncorrect: { type: Number },
+    thirdBuzzAnsweredCorrect: { type: Number },
+    thirdBuzzAnsweredIncorrect: { type: Number },
     //room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
 });
 
