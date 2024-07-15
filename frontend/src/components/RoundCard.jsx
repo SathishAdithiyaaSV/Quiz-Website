@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // Import useState here
+import React, { useState } from 'react';
 import QuestionCard from './QuestionCard';
 
 const RoundCard = ({
@@ -18,7 +18,7 @@ const RoundCard = ({
   const [activeQuestion, setActiveQuestion] = useState(null);
   
   const handleQuestionClick = (index) => {
-    setActiveQuestion(activeQuestion===index ? null : index);
+    setActiveQuestion(activeQuestion === index ? null : index);
   };
 
   return (
@@ -40,7 +40,7 @@ const RoundCard = ({
       </div>
 
       {expanded && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center overflow-auto">
           <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md relative">
             <button
               className="absolute top-2 right-2 text-white"
@@ -60,19 +60,21 @@ const RoundCard = ({
                 placeholder="Enter round name"
               />
             </div>
-            {round.questions.map((question, questionIndex) => (
-              <QuestionCard
-                key={questionIndex}
-                question={question}
-                roundIndex={roundIndex}
-                questionIndex={questionIndex}
-                onQuestionChange={onQuestionChange}
-                onQuestionDelete={onQuestionDelete}
-                onQuestionClick={handleQuestionClick}
-                expanded={activeQuestion === questionIndex}
-                onAnswerChange={onAnswerChange}
-              />
-            ))}
+            <div className="max-h-80 overflow-y-auto">
+              {round.questions.map((question, questionIndex) => (
+                <QuestionCard
+                  key={questionIndex}
+                  question={question}
+                  roundIndex={roundIndex}
+                  questionIndex={questionIndex}
+                  onQuestionChange={onQuestionChange}
+                  onQuestionDelete={onQuestionDelete}
+                  onQuestionClick={handleQuestionClick}
+                  expanded={activeQuestion === questionIndex}
+                  onAnswerChange={onAnswerChange}
+                />
+              ))}
+            </div>
             <button
               type="button"
               onClick={() => onQuestionAdd(roundIndex)}

@@ -94,22 +94,24 @@ const CreateRoom = () => {
             />
           </div>
 
-          {rounds.map((round, roundIndex) => (
-            <RoundCard
-              key={roundIndex}
-              round={round}
-              roundIndex={roundIndex}
-              onRoundClick={openRoundModal}
-              onRoundDelete={deleteRound}
-              onRoundNameChange={handleRoundNameChange}
-              onQuestionChange={handleQuestionChange}
-              onQuestionAdd={addQuestion}
-              onQuestionDelete={deleteQuestion}
-              expanded={activeRound === roundIndex}
-              onClose={closeRoundModal}
-              onAnswerChange={handleAnswerChange}
-            />
-          ))}
+          <div className="max-h-96 overflow-y-auto mb-4">
+            {rounds.map((round, roundIndex) => (
+              <RoundCard
+                key={roundIndex}
+                round={round}
+                roundIndex={roundIndex}
+                onRoundClick={openRoundModal}
+                onRoundDelete={deleteRound}
+                onRoundNameChange={handleRoundNameChange}
+                onQuestionChange={handleQuestionChange}
+                onQuestionAdd={addQuestion}
+                onQuestionDelete={deleteQuestion}
+                expanded={activeRound === roundIndex}
+                onClose={closeRoundModal}
+                onAnswerChange={handleAnswerChange}
+              />
+            ))}
+          </div>
 
           <button
             type="button"
