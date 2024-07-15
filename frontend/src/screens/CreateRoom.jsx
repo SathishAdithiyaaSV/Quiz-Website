@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
 import RoundCard from '../components/RoundCard'; // Make sure to adjust the import path as needed
-
+import SettingsCard from '../components/SettingsCard';
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
   const [rounds, setRounds] = useState([{ name: '', questions: [{ text: '', type: 'text', answer: '', options: [] }] }]);
   const [activeRound, setActiveRound] = useState(null);
+  const [settingsLevel, setSettingsLevel] = useState('room'); // New state for settings level
+  const [settings, setSettings] = useState({ // Initial state for settings
+    time: '',
+    points: 0,
+    buzzer: false,
+    answerOnBuzz: false,
+    answerAfterTime: false,
+    timeAfterFirstBuzz: '',
+    timeAfterSecondBuzz: '',
+    timeAfterThirdBuzz: '',
+    equalPointsOnCorrectAnswer: false,
+    firstBuzzAnsweredCorrect: 0,
+    firstBuzzAnsweredIncorrect: 0,
+    secondBuzzAnsweredCorrect: 0,
+    secondBuzzAnsweredIncorrect: 0,
+    thirdBuzzAnsweredCorrect: 0,
+    thirdBuzzAnsweredIncorrect: 0,
+  });
 
   const handleRoomNameChange = (e) => {
     setRoomName(e.target.value);
@@ -77,6 +95,14 @@ const CreateRoom = () => {
     console.log('Rounds:', rounds);
   };
 
+  const handleSettingsChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prevSettings => ({
+      ...prevSettings,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
       <div className="p-8 bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl">
@@ -93,25 +119,23 @@ const CreateRoom = () => {
               placeholder="Enter room name"
             />
           </div>
-
-          <div className="max-h-96 overflow-y-auto mb-4">
-            {rounds.map((round, roundIndex) => (
-              <RoundCard
-                key={roundIndex}
-                round={round}
-                roundIndex={roundIndex}
-                onRoundClick={openRoundModal}
-                onRoundDelete={deleteRound}
-                onRoundNameChange={handleRoundNameChange}
-                onQuestionChange={handleQuestionChange}
-                onQuestionAdd={addQuestion}
-                onQuestionDelete={deleteQuestion}
-                expanded={activeRound === roundIndex}
-                onClose={closeRoundModal}
-                onAnswerChange={handleAnswerChange}
-              />
-            ))}
-          </div>
+          <label className="block mb-2" htmlFor="rounds">Rounds</label>
+          {rounds.map((round, roundIndex) => (
+            <RoundCard
+              key={roundIndex}
+              round={round}
+              roundIndex={roundIndex}
+              onRoundClick={openRoundModal}
+              onRoundDelete={deleteRound}
+              onRoundNameChange={handleRoundNameChange}
+              onQuestionChange={handleQuestionChange}
+              onQuestionAdd={addQuestion}
+              onQuestionDelete={deleteQuestion}
+              expanded={activeRound === roundIndex}
+              onClose={closeRoundModal}
+              onAnswerChange={handleAnswerChange}
+            />
+          ))}
 
           <button
             type="button"
@@ -120,7 +144,22 @@ const CreateRoom = () => {
           >
             Add Round
           </button>
-
+          <div className="mb-4">
+            <label className="block mb-2" htmlFor="settingsLevel">Settings Level</label>
+            <select
+              id="settingsLevel"
+              value={settingsLevel}
+              onChange={(e) => setSettingsLevel(e.target.value)}
+              className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+            >
+              <option value="room">Room</option>
+              <option value="round">Round</option>
+              <option value="question">Question</option>
+            </select>
+          </div>
+          {settingsLevel === 'room' && (
+            <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} expanded="True"/>
+          )}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
