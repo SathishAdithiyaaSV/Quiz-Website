@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const roomSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    hosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}],
+    host: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     type: { type: String, required: true},
     teamSize: { type: Number },
     teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],

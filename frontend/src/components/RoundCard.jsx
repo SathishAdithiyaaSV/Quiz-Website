@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import QuestionCard from './QuestionCard';
+import SettingsCard from './SettingsCard';
 
 const RoundCard = ({
   round,
@@ -12,7 +13,10 @@ const RoundCard = ({
   onQuestionDelete,
   onClose,
   expanded,
-  onAnswerChange
+  onAnswerChange,
+  settingsLevel,
+  settings,
+  handleSettingsChange
 }) => {
   const questionTypes = ['text', 'mcq']; // Define questionTypes within the component
   const [activeQuestion, setActiveQuestion] = useState(null);
@@ -41,7 +45,7 @@ const RoundCard = ({
 
       {expanded && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center overflow-auto">
-          <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md relative">
+          <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md relative max-h-[80vh] overflow-auto">
             <button
               className="absolute top-2 right-2 text-white"
               onClick={onClose}
@@ -60,7 +64,7 @@ const RoundCard = ({
                 placeholder="Enter round name"
               />
             </div>
-            <div className="max-h-80 overflow-y-auto">
+            <div className="max-h-60 overflow-y-auto">
               {round.questions.map((question, questionIndex) => (
                 <QuestionCard
                   key={questionIndex}
@@ -72,6 +76,9 @@ const RoundCard = ({
                   onQuestionClick={handleQuestionClick}
                   expanded={activeQuestion === questionIndex}
                   onAnswerChange={onAnswerChange}
+                  settingsLevel={settingsLevel}
+                  settings={settings}
+                  handleSettingsChange={handleSettingsChange}
                 />
               ))}
             </div>
@@ -82,6 +89,9 @@ const RoundCard = ({
             >
               Add Question
             </button>
+            {settingsLevel === 'round' && (
+              <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} />
+            )}
           </div>
         </div>
       )}

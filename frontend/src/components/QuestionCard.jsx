@@ -1,4 +1,5 @@
 import React from 'react';
+import SettingsCard from './SettingsCard';
 
 const QuestionCard = ({
   question,
@@ -8,7 +9,10 @@ const QuestionCard = ({
   onQuestionChange,
   onQuestionClick,
   expanded,
-  onAnswerChange
+  onAnswerChange,
+  settingsLevel,
+  settings,
+  handleSettingsChange
 }) => {
   const questionTypes = ['text', 'mcq']; // Define questionTypes within the component
 
@@ -107,6 +111,9 @@ const QuestionCard = ({
                 placeholder="Enter answer"
               />
             </div>
+          )}
+          {settingsLevel === 'question' && (
+            <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} />
           )}
         </div>
       )}

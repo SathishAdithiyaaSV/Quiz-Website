@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import RoundCard from '../components/RoundCard'; // Make sure to adjust the import path as needed
 import SettingsCard from '../components/SettingsCard';
+
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
   const [rounds, setRounds] = useState([{ name: '', questions: [{ text: '', type: 'text', answer: '', options: [] }] }]);
@@ -23,6 +24,8 @@ const CreateRoom = () => {
     thirdBuzzAnsweredCorrect: 0,
     thirdBuzzAnsweredIncorrect: 0,
   });
+  const [isTeam, setIsTeam] = useState(true);
+  const [teamSize, setTeamSize] = useState('');
 
   const handleRoomNameChange = (e) => {
     setRoomName(e.target.value);
@@ -93,6 +96,8 @@ const CreateRoom = () => {
     // Handle form submission logic here
     console.log('Room Name:', roomName);
     console.log('Rounds:', rounds);
+    console.log('Is Team:', isTeam);
+    console.log('Team Size:', teamSize);
   };
 
   const handleSettingsChange = (e) => {
@@ -101,6 +106,14 @@ const CreateRoom = () => {
       ...prevSettings,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleTeamCheckboxChange = (e) => {
+    setIsTeam(e.target.checked);
+  };
+
+  const handleTeamSizeChange = (e) => {
+    setTeamSize(e.target.value);
   };
 
   return (
@@ -134,6 +147,9 @@ const CreateRoom = () => {
               expanded={activeRound === roundIndex}
               onClose={closeRoundModal}
               onAnswerChange={handleAnswerChange}
+              settingsLevel={settingsLevel}
+              settings={settings}
+              handleSettingsChange={handleSettingsChange}
             />
           ))}
 
@@ -157,8 +173,42 @@ const CreateRoom = () => {
               <option value="question">Question</option>
             </select>
           </div>
+          <div className="mb-4">
+            <label className="block mb-2" htmlFor="participants">Participants</label>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="isTeam"
+                checked={isTeam}
+                onChange={handleTeamCheckboxChange}
+                className="mr-2"
+              />
+              <label htmlFor="isTeam" className="mr-4">Teams</label>
+              <input
+                type="checkbox"
+                id="isIndividual"
+                checked={!isTeam}
+                onChange={() => setIsTeam(false)}
+                className="mr-2"
+              />
+              <label htmlFor="isIndividual">Individual Participants</label>
+            </div>
+          </div>
+          {isTeam && (
+            <div className="mb-4">
+              <label className="block mb-2" htmlFor="teamSize">Team Size</label>
+              <input
+                type="number"
+                id="teamSize"
+                value={teamSize}
+                onChange={handleTeamSizeChange}
+                className="w-full p-2 rounded bg-gray-700 border border-gray-600"
+                placeholder="Enter team size"
+              />
+            </div>
+          )}
           {settingsLevel === 'room' && (
-            <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} expanded="True"/>
+            <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} />
           )}
           <button
             type="submit"

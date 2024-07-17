@@ -1,11 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { IoMdSettings } from "react-icons/io";
 
-const SettingsCard = ({ settings, onSettingsChange, expanded }) => {
+const SettingsCard = ({ settings, onSettingsChange }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleClick = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    onSettingsChange({
+      target: {
+        name,
+        value: checked,
+      },
+    });
+  };
+
   return (
     <>
+      {!expanded && (
+        <div className="flex items-center mb-4 mt-4">
+          <div className="p-4 bg-gray-600 rounded-lg flex-1">
+            <h4 className="text-md font-bold" onClick={handleClick}>Settings</h4>
+          </div>
+        </div>
+      )}
       {expanded && (
-        <div className="mb-4 p-4 bg-gray-700 rounded-lg">
-          <h4 className="text-lg font-bold mb-2">Settings</h4>
+        <div className="mb-4 mt-4 p-4 bg-gray-700 rounded-lg">
+          <h4 className="text-lg font-bold mb-2" onClick={handleClick}>Settings</h4>
           <div className="flex items-center mb-2">
             <label className="w-1/3" htmlFor="time">Time:</label>
             <input
@@ -37,7 +61,7 @@ const SettingsCard = ({ settings, onSettingsChange, expanded }) => {
               id="buzzer"
               name="buzzer"
               checked={settings.buzzer}
-              onChange={onSettingsChange}
+              onChange={handleCheckboxChange}
               className="mr-2"
             />
           </div>
@@ -48,7 +72,7 @@ const SettingsCard = ({ settings, onSettingsChange, expanded }) => {
               id="answerOnBuzz"
               name="answerOnBuzz"
               checked={settings.answerOnBuzz}
-              onChange={onSettingsChange}
+              onChange={handleCheckboxChange}
               className="mr-2"
             />
           </div>
@@ -59,7 +83,7 @@ const SettingsCard = ({ settings, onSettingsChange, expanded }) => {
               id="answerAfterTime"
               name="answerAfterTime"
               checked={settings.answerAfterTime}
-              onChange={onSettingsChange}
+              onChange={handleCheckboxChange}
               className="mr-2"
             />
           </div>
@@ -106,7 +130,7 @@ const SettingsCard = ({ settings, onSettingsChange, expanded }) => {
               id="equalPointsOnCorrectAnswer"
               name="equalPointsOnCorrectAnswer"
               checked={settings.equalPointsOnCorrectAnswer}
-              onChange={onSettingsChange}
+              onChange={handleCheckboxChange}
               className="mr-2"
             />
           </div>
