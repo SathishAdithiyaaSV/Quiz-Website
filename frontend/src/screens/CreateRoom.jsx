@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import RoundCard from '../components/RoundCard'; // Make sure to adjust the import path as needed
 import SettingsCard from '../components/SettingsCard';
+//import jwtDecode from 'jwt-decode';
+const BACKEND_URL =
+  import.meta.env.VITE_APP_BACKEND_URL ?? 'http://localhost:3000';
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
@@ -27,6 +30,21 @@ const CreateRoom = () => {
   const [isTeam, setIsTeam] = useState(true);
   const [teamSize, setTeamSize] = useState('');
 
+  const getJwt = () => {
+    return localStorage.getItem('jwtToken');
+  };
+  
+  // Function to decode the JWT and extract the username
+  /* getUsernameFromJwt = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.username; // Assuming 'username' is the key in the payload
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
+    }
+  };
+*/
   const handleRoomNameChange = (e) => {
     setRoomName(e.target.value);
   };
@@ -91,13 +109,31 @@ const CreateRoom = () => {
     setActiveRound(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission logic here
     console.log('Room Name:', roomName);
     console.log('Rounds:', rounds);
     console.log('Is Team:', isTeam);
     console.log('Team Size:', teamSize);
+    const response = await fetch(`${BACKEND_URL}/api/rooms/create`, {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${getJwt()}`
+        },
+      body: JSON.stringify({
+          name: roomName,
+ //         host: "",
+          rounds: rounds,
+          isTeam: isTeam,
+          teamSize: teamSize,
+          settingsLevel: settingsLevel,
+          settings: settings
+      }),
+    });
+
+    const json = await response.json();
   };
 
   const handleSettingsChange = (e) => {

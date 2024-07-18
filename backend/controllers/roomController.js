@@ -4,6 +4,12 @@ import Question from '../models/questionModel.js';
 import User from '../models/userModel.js';
 import Settings from '../models/settingsModel.js';
 
+const createSettings = async (properties) => {
+    const settings = new Settings(properties);
+    const newSettings = await settings.save();
+    return newSettings._id;
+}
+
 const createQuestion = async (properties) => {
     const qn = new Question(properties);
     const newQn = await qn.save();
@@ -32,14 +38,16 @@ const createRound = async (roundProperties) => {
 
 export const createRoom = async (req, res) => {
     var properties = req.body;
-    console.log(properties);
+    console.log(req.user);
     try {
         for(var i = 0; i < properties.rounds.length; i++) {
             const newRound = await createRound(properties.rounds[i]);
             properties.rounds[i] = newRound._id;
         }
-
+        properties["host"] = req.user._id;
         // Create a new round with the question IDs
+        if(properties.settingsLevel === "room")
+            properties.settings=await createSettings(properties.settings);
         const room = new Room(properties);
         const newRoom = await room.save();
         res.status(201).json(newRoom);

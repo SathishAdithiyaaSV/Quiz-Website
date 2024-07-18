@@ -28,7 +28,7 @@ const Login = () => {
       });
 
       const json = await response.json();
-      localStorage.setItem("token", json.token);
+      localStorage.setItem("jwtToken", json.token);
   };
 
   return (
