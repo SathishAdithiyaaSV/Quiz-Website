@@ -16,6 +16,10 @@ const QuestionCard = ({
 }) => {
   const questionTypes = ['text', 'mcq']; // Define questionTypes within the component
 
+  const handleQuestionChange = (name, value, optionIndex = null) => {
+    onQuestionChange(roundIndex, questionIndex, { name, value, optionIndex });
+  };
+
   return (
     <div className="mb-2">
       <div className="flex items-center">
@@ -41,7 +45,7 @@ const QuestionCard = ({
               type="text"
               id={`question-${roundIndex}-${questionIndex}`}
               value={question.text}
-              onChange={(e) => onQuestionChange(roundIndex, questionIndex, e)}
+              onChange={(e) => handleQuestionChange('text', e.target.value)}
               className="w-full p-2 rounded bg-gray-500 border border-gray-400"
               placeholder="Enter question"
             />
@@ -51,7 +55,7 @@ const QuestionCard = ({
             <select
               id={`questionType-${roundIndex}-${questionIndex}`}
               value={question.type}
-              onChange={(e) => onQuestionChange(roundIndex, questionIndex, { target: { name: 'type', value: e.target.value } })}
+              onChange={(e) => handleQuestionChange('type', e.target.value)}
               className="w-full p-2 rounded bg-gray-500 border border-gray-400"
             >
               {questionTypes.map((type) => (
@@ -81,13 +85,13 @@ const QuestionCard = ({
                     type="text"
                     id={`option-${roundIndex}-${questionIndex}-${optionIndex}`}
                     value={option}
-                    onChange={(e) => onQuestionChange(roundIndex, questionIndex, { target: { name: 'options', value: e.target.value, optionIndex } })}
+                    onChange={(e) => handleQuestionChange('options', e.target.value, optionIndex)}
                     className="w-full p-2 rounded bg-gray-500 border border-gray-400"
                     placeholder={`Option ${optionIndex + 1}`}
                   />
                   <button
                     type="button"
-                    onClick={() => onQuestionChange(roundIndex, questionIndex, { target: { name: 'deleteOption', optionIndex } })}
+                    onClick={() => handleQuestionChange('deleteOption', null, optionIndex)}
                     className="ml-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                   >
                     Delete
@@ -96,7 +100,7 @@ const QuestionCard = ({
               ))}
               <button
                 type="button"
-                onClick={() => onQuestionChange(roundIndex, questionIndex, { target: { name: 'addOption' } })}
+                onClick={() => handleQuestionChange('addOption')}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
                 Add Option
@@ -113,7 +117,7 @@ const QuestionCard = ({
             </div>
           )}
           {settingsLevel === 'question' && (
-            <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} />
+            <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} level={settingsLevel} roundIndex={roundIndex} questionIndex={questionIndex} />
           )}
         </div>
       )}

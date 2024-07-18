@@ -1,35 +1,28 @@
 import React, { useState } from 'react';
-import { IoMdSettings } from "react-icons/io";
 
-const SettingsCard = ({ settings, onSettingsChange }) => {
+const SettingsCard = ({ settings, onSettingsChange, level, roundIndex, questionIndex }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const handleChange = (e) => {
+    onSettingsChange(e, level, roundIndex, questionIndex);
+  };
 
   const handleClick = () => {
     setExpanded(!expanded);
-  };
-
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    onSettingsChange({
-      target: {
-        name,
-        value: checked,
-      },
-    });
   };
 
   return (
     <>
       {!expanded && (
         <div className="flex items-center mb-4 mt-4">
-          <div className="p-4 bg-gray-600 rounded-lg flex-1">
-            <h4 className="text-md font-bold" onClick={handleClick}>Settings</h4>
+          <div className="p-4 bg-gray-600 rounded-lg flex-1 cursor-pointer" onClick={handleClick}>
+            <h4 className="text-md font-bold">Settings</h4>
           </div>
         </div>
       )}
       {expanded && (
         <div className="mb-4 mt-4 p-4 bg-gray-700 rounded-lg">
-          <h4 className="text-lg font-bold mb-2" onClick={handleClick}>Settings</h4>
+          <h4 className="text-lg font-bold mb-2 cursor-pointer" onClick={handleClick}>Settings</h4>
           <div className="flex items-center mb-2">
             <label className="w-1/3" htmlFor="time">Time:</label>
             <input
@@ -37,7 +30,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="time"
               name="time"
               value={settings.time}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter time"
             />
@@ -49,7 +42,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="points"
               name="points"
               value={settings.points}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter points"
             />
@@ -61,7 +54,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="buzzer"
               name="buzzer"
               checked={settings.buzzer}
-              onChange={handleCheckboxChange}
+              onChange={handleChange}
               className="mr-2"
             />
           </div>
@@ -72,7 +65,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="answerOnBuzz"
               name="answerOnBuzz"
               checked={settings.answerOnBuzz}
-              onChange={handleCheckboxChange}
+              onChange={handleChange}
               className="mr-2"
             />
           </div>
@@ -83,7 +76,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="answerAfterTime"
               name="answerAfterTime"
               checked={settings.answerAfterTime}
-              onChange={handleCheckboxChange}
+              onChange={handleChange}
               className="mr-2"
             />
           </div>
@@ -94,7 +87,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="timeAfterFirstBuzz"
               name="timeAfterFirstBuzz"
               value={settings.timeAfterFirstBuzz}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter time"
             />
@@ -106,7 +99,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="timeAfterSecondBuzz"
               name="timeAfterSecondBuzz"
               value={settings.timeAfterSecondBuzz}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter time"
             />
@@ -118,7 +111,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="timeAfterThirdBuzz"
               name="timeAfterThirdBuzz"
               value={settings.timeAfterThirdBuzz}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter time"
             />
@@ -130,7 +123,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="equalPointsOnCorrectAnswer"
               name="equalPointsOnCorrectAnswer"
               checked={settings.equalPointsOnCorrectAnswer}
-              onChange={handleCheckboxChange}
+              onChange={handleChange}
               className="mr-2"
             />
           </div>
@@ -141,7 +134,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="firstBuzzAnsweredCorrect"
               name="firstBuzzAnsweredCorrect"
               value={settings.firstBuzzAnsweredCorrect}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter points"
             />
@@ -153,7 +146,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="firstBuzzAnsweredIncorrect"
               name="firstBuzzAnsweredIncorrect"
               value={settings.firstBuzzAnsweredIncorrect}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter points"
             />
@@ -165,7 +158,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="secondBuzzAnsweredCorrect"
               name="secondBuzzAnsweredCorrect"
               value={settings.secondBuzzAnsweredCorrect}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter points"
             />
@@ -177,7 +170,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="secondBuzzAnsweredIncorrect"
               name="secondBuzzAnsweredIncorrect"
               value={settings.secondBuzzAnsweredIncorrect}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter points"
             />
@@ -189,7 +182,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="thirdBuzzAnsweredCorrect"
               name="thirdBuzzAnsweredCorrect"
               value={settings.thirdBuzzAnsweredCorrect}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter points"
             />
@@ -201,7 +194,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
               id="thirdBuzzAnsweredIncorrect"
               name="thirdBuzzAnsweredIncorrect"
               value={settings.thirdBuzzAnsweredIncorrect}
-              onChange={onSettingsChange}
+              onChange={handleChange}
               className="w-2/3 p-2 rounded bg-gray-600 border border-gray-500"
               placeholder="Enter points"
             />

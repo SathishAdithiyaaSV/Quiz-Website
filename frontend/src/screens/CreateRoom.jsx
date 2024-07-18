@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
-import RoundCard from '../components/RoundCard'; // Make sure to adjust the import path as needed
+import RoundCard from '../components/RoundCard'; // Adjust the import path as needed
 import SettingsCard from '../components/SettingsCard';
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
   const [rounds, setRounds] = useState([{ name: '', questions: [{ text: '', type: 'text', answer: '', options: [] }] }]);
   const [activeRound, setActiveRound] = useState(null);
-  const [settingsLevel, setSettingsLevel] = useState('room'); // New state for settings level
-  const [settings, setSettings] = useState({ // Initial state for settings
-    time: '',
-    points: 0,
-    buzzer: false,
-    answerOnBuzz: false,
-    answerAfterTime: false,
-    timeAfterFirstBuzz: '',
-    timeAfterSecondBuzz: '',
-    timeAfterThirdBuzz: '',
-    equalPointsOnCorrectAnswer: false,
-    firstBuzzAnsweredCorrect: 0,
-    firstBuzzAnsweredIncorrect: 0,
-    secondBuzzAnsweredCorrect: 0,
-    secondBuzzAnsweredIncorrect: 0,
-    thirdBuzzAnsweredCorrect: 0,
-    thirdBuzzAnsweredIncorrect: 0,
+  const [settingsLevel, setSettingsLevel] = useState('room');
+  const [settings, setSettings] = useState({
+    room: {
+      time: '',
+      points: 0,
+      buzzer: false,
+      answerOnBuzz: false,
+      answerAfterTime: false,
+      timeAfterFirstBuzz: '',
+      timeAfterSecondBuzz: '',
+      timeAfterThirdBuzz: '',
+      equalPointsOnCorrectAnswer: false,
+      firstBuzzAnsweredCorrect: 0,
+      firstBuzzAnsweredIncorrect: 0,
+      secondBuzzAnsweredCorrect: 0,
+      secondBuzzAnsweredIncorrect: 0,
+      thirdBuzzAnsweredCorrect: 0,
+      thirdBuzzAnsweredIncorrect: 0,
+    },
+    round: {},
+    question: {},
   });
   const [isTeam, setIsTeam] = useState(true);
   const [teamSize, setTeamSize] = useState('');
@@ -100,12 +104,28 @@ const CreateRoom = () => {
     console.log('Team Size:', teamSize);
   };
 
-  const handleSettingsChange = (e) => {
+  const handleSettingsChange = (e, level, roundIndex = null, questionIndex = null) => {
     const { name, value, type, checked } = e.target;
-    setSettings(prevSettings => ({
-      ...prevSettings,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    let newSettings = { ...settings };
+
+    if (level === 'room') {
+      newSettings.room[name] = type === 'checkbox' ? checked : value;
+    } else if (level === 'round' && roundIndex !== null) {
+      newSettings.round[roundIndex] = {
+        ...newSettings.round[roundIndex],
+        [name]: type === 'checkbox' ? checked : value,
+      };
+    } else if (level === 'question' && roundIndex !== null && questionIndex !== null) {
+      if (!newSettings.question[roundIndex]) {
+        newSettings.question[roundIndex] = [];
+      }
+      newSettings.question[roundIndex][questionIndex] = {
+        ...newSettings.question[roundIndex][questionIndex],
+        [name]: type === 'checkbox' ? checked : value,
+      };
+    }
+
+    setSettings(newSettings);
   };
 
   const handleTeamCheckboxChange = (e) => {
@@ -208,7 +228,7 @@ const CreateRoom = () => {
             </div>
           )}
           {settingsLevel === 'room' && (
-            <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} />
+            <SettingsCard settings={settings.room} onSettingsChange={(e) => handleSettingsChange(e, 'room')} />
           )}
           <button
             type="submit"

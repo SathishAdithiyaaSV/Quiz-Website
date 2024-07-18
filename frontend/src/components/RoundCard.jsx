@@ -18,9 +18,14 @@ const RoundCard = ({
   settings,
   handleSettingsChange
 }) => {
-  const questionTypes = ['text', 'mcq']; // Define questionTypes within the component
+  const currentSettings = settingsLevel === 'room'
+    ? settings.room
+    : settingsLevel === 'round'
+    ? settings.round[roundIndex] || {}
+    : null;
+
   const [activeQuestion, setActiveQuestion] = useState(null);
-  
+
   const handleQuestionClick = (index) => {
     setActiveQuestion(activeQuestion === index ? null : index);
   };
@@ -65,22 +70,28 @@ const RoundCard = ({
               />
             </div>
             <div className="max-h-60 overflow-y-auto">
-              {round.questions.map((question, questionIndex) => (
-                <QuestionCard
-                  key={questionIndex}
-                  question={question}
-                  roundIndex={roundIndex}
-                  questionIndex={questionIndex}
-                  onQuestionChange={onQuestionChange}
-                  onQuestionDelete={onQuestionDelete}
-                  onQuestionClick={handleQuestionClick}
-                  expanded={activeQuestion === questionIndex}
-                  onAnswerChange={onAnswerChange}
-                  settingsLevel={settingsLevel}
-                  settings={settings}
-                  handleSettingsChange={handleSettingsChange}
-                />
-              ))}
+              {round.questions.map((question, questionIndex) => {
+                const questionSettings = settingsLevel === 'question'
+                  ? settings.question[roundIndex] && settings.question[roundIndex][questionIndex]
+                  : currentSettings;
+
+                return (
+                  <QuestionCard
+                    key={questionIndex}
+                    question={question}
+                    roundIndex={roundIndex}
+                    questionIndex={questionIndex}
+                    onQuestionChange={onQuestionChange}
+                    onQuestionDelete={onQuestionDelete}
+                    onQuestionClick={handleQuestionClick}
+                    expanded={activeQuestion === questionIndex}
+                    onAnswerChange={onAnswerChange}
+                    settingsLevel={settingsLevel}
+                    settings={questionSettings}
+                    handleSettingsChange={(e) => handleSettingsChange(e, settingsLevel, roundIndex, questionIndex)}
+                  />
+                );
+              })}
             </div>
             <button
               type="button"
@@ -90,7 +101,12 @@ const RoundCard = ({
               Add Question
             </button>
             {settingsLevel === 'round' && (
-              <SettingsCard settings={settings} onSettingsChange={handleSettingsChange} />
+              <SettingsCard
+                settings={currentSettings}
+                onSettingsChange={(e) => handleSettingsChange(e, settingsLevel, roundIndex)}
+                level={settingsLevel}
+                roundIndex={roundIndex}
+              />
             )}
           </div>
         </div>
