@@ -7,7 +7,7 @@ import { userSocketMap } from "./socketHandler.js";
 import { io } from "../app.js";
 import mongoose from "mongoose";
 
-export const handleShowRules = async (socket, details) => {
+export const handleBuzzIn = async (socket, details) => {
     const { roomId, round, qnNo, teamName } = JSON.parse(details);
     const roomObjId = mongoose.Types.ObjectId(roomId)
     const room = await Room.findById(roomObjId);
