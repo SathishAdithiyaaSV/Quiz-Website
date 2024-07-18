@@ -6,18 +6,22 @@ import Round from "../models/roundModel.js";
 import Settings from "../models/settingsModel.js";
 import { userSocketMap } from "./socketHandler.js";
 import { io } from "../app.js";
+import mongoose from "mongoose";
 
 export const handleSubmitAnswer = async (socket, details) => {
-    const { roomName, round, qnNo, teamName, ansSubmitted } = JSON.parse(details);
-    const room = await Room.findOne({ name: roomName });
+    const { roomId, round, qnNo, teamName, ansSubmitted } = JSON.parse(details);
+    const roomObjId = mongoose.Types.ObjectId(roomId);
+    const room = await Room.findById(roomObjId);
     if (!room) {
         io.to(socket.id).emit('privateMessage', "Room does not exist");
         return;
     }
 
-    const qn = await Question.findById(room.rounds[round+1].questions[qnNo +1 ].toString());
+    const rnd = await Round.findById(room.rounds[round+1]);
+    const qn = await Question.findById(rnd.questions[qnNo +1 ]);
     const team = await Team.findOne({ name: teamName });
-    const qnSettings = await Settings.findById(qn.settings.toString());
+    const qnSettings = await Settings.findById(qn.settings);
+    
     var data = {};
     var pts;
     if (ansSubmitted === qn.answer) {
@@ -51,8 +55,8 @@ export const handleSubmitAnswer = async (socket, details) => {
             pts= -qnSettings.thirdBuzzAnsweredIncorrect;
         data = {team: teamName, answeredCorrectly: false, correctAnswer: qn.answer};
     }
-    await Team.updateOne({_id: teamName._id}, {$inc: {points: pts}});
-    const Teams = room.teams.map( async team => await Team.findById(team.toString()))
+    await Team.updateOne({_id: team._id}, {$inc: {points: pts}});
+    const Teams = room.teams.map( async team => await Team.findById(team))
     const Leaderboard = Teams.sort({ points: -1 }); // sort descending
     //return users.map(user => ({ id: user.id, score: user.score }));
     io.in(roomName).emit('answered', data);

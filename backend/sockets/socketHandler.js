@@ -2,9 +2,12 @@
 import User from "../models/userModel.js";
 import Room from "../models/roomModel.js";
 import Team from "../models/teamModel.js";
+import { handleShowPreJoinSettings } from "./handleShowPreJoinSettings.js";
 import { handleJoinRoom } from "./handleJoinRoom.js";
 import { handleShowRules } from "./handleShowRules.js";
 import { handleShowNextQn } from "./handleShowNextQn.js";
+import { handleBuzzIn } from "./handleBuzzIn.js";
+import { handleSubmitAnswer } from "./handleSubmitAnswer.js";
 
 const userSocketMap = new Map();
 
@@ -25,8 +28,12 @@ export const handleSocketConnection = async (socket) => {
 
     console.log('New client connected:', socket.id);
 
-    socket.on('joinRoom', (roomId) => {
-        handleJoinRoom(socket, roomId);
+    socket.on('showPreJoinSettings', (details) => {
+        handleShowPreJoinSettings(socket, details);
+    });
+
+    socket.on('joinRoom', (details) => {
+        handleJoinRoom(socket, details);
     });
 
     socket.on('showRules', (details) => {
