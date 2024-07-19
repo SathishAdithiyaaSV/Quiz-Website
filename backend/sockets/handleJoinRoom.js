@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 
 export const handleJoinRoom = async (socket, details) => {
     const { roomId, teamName, users } = JSON.parse(details);
-    const roomObjId = mongoose.Types.ObjectId(roomId);
+    const roomObjId = new mongoose.Types.ObjectId(roomId);
     var username = "";
     var members = [];
     var admin;
@@ -17,8 +17,6 @@ export const handleJoinRoom = async (socket, details) => {
         if(user)
         {
             members.push(user._id)
-            if(user.username === socket.user.username)
-                admin = user._id;
         }
         else
         {
@@ -27,14 +25,15 @@ export const handleJoinRoom = async (socket, details) => {
         }
     }
 
-
+    members.push(socket.user._id);
+    admin = socket.user._id;
     const room = await Room.findById(roomObjId);
     if (!room) {
         io.to(socket._id).emit('privateMessage', "Room does not exist");
         return;
     }
-    team = new Team({name: teamName, admin: admin, members: members, room: room});
-    let newTeam = await team.save();
+    const team = new Team({name: teamName, admin: admin, members: members, room: room});
+    const newTeam = await team.save();
     await Room.updateOne({_id: roomObjId}, {$push : {teams: newTeam._id}});
     console.log("team saved");
 
@@ -43,7 +42,7 @@ export const handleJoinRoom = async (socket, details) => {
     {
         let memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
 //        console.log(memberSocket.id);
-        memberSocket.join(roomName);
+        memberSocket.join(roomId);
     }
     io.to(socket.id).emit('privateMessage', "Team saved successfully and added to room");
     

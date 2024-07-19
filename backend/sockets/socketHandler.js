@@ -1,4 +1,5 @@
 // backend/sockets/socketHandler.js
+import { io } from '../app.js'; // Ensure io is properly imported and available
 import User from "../models/userModel.js";
 import Room from "../models/roomModel.js";
 import Team from "../models/teamModel.js";
@@ -12,7 +13,13 @@ import { handleSubmitAnswer } from "./handleSubmitAnswer.js";
 const userSocketMap = new Map();
 
 export const handleSocketConnection = async (socket) => {
-    const userId = socket.user._id.toString(); // Retrieve user ID from socket
+    const userId = socket.user && socket.user._id ? socket.user._id.toString() : null; // Ensure user ID is correctly retrieved
+
+    if (!userId) {
+        console.error('User ID not found in socket');
+        socket.disconnect(true); // Disconnect if user ID is not found
+        return;
+    }
 
     // Check if the user is already connected
     if (userSocketMap.has(userId)) {
@@ -28,39 +35,37 @@ export const handleSocketConnection = async (socket) => {
 
     console.log('New client connected:', socket.id);
 
-    socket.on('showPreJoinSettings', (details) => {
-        handleShowPreJoinSettings(socket, details);
+    socket.on('showPreJoinSettings', async (details) => {
+        await handleShowPreJoinSettings(socket, details);
     });
 
-    socket.on('joinRoom', (details) => {
-        handleJoinRoom(socket, details);
+    socket.on('joinRoom', async (details) => {
+        await handleJoinRoom(socket, details);
     });
 
-    socket.on('showRules', (details) => {
-        handleShowRules(socket, details);
+    socket.on('showRules', async (details) => {
+        await handleShowRules(socket, details);
     });
 
-    socket.on('showNextQn', (details) => {
-        handleShowNextQn(socket, details);
+    socket.on('showNextQn', async (details) => {
+        await handleShowNextQn(socket, details);
     });
 
-    socket.on('buzzIn', (details) => {
-        handleBuzzIn(socket, details);
+    socket.on('buzzIn', async (details) => {
+        await handleBuzzIn(socket, details);
     });
 
-    socket.on('submitAnswer', (details) => {
-        handleSubmitAnswer(socket, details);
+    socket.on('submitAnswer', async (details) => {
+        await handleSubmitAnswer(socket, details);
     });
-
 
     socket.on('leaveRoom', (roomId) => {
         socket.leave(roomId);
         console.log(`Client ${socket.id} left room ${roomId}`);
     });
 
-
-
     socket.on('disconnect', () => {
+        userSocketMap.delete(userId); // Remove the user from the map on disconnect
         console.log('Client disconnected:', socket.id);
     });
 };

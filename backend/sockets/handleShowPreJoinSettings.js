@@ -9,14 +9,14 @@ import mongoose from "mongoose";
 
 export const handleShowPreJoinSettings = async (socket, details) => {
     const { roomId } = JSON.parse(details);
-    const roomObjId = mongoose.Types.ObjectId(roomId)
+    const roomObjId = new mongoose.Types.ObjectId(roomId)
     const room = await Room.findById(roomObjId);
     if (!room) {
         io.to(socket.id).emit('privateMessage', "Room does not exist");
         return;
     }
     if(room.isTeam)
-        io.to(socket.id).emit('preJoinSettings', {isTeam: room.isTeam, teamSize: room.teamSize});
+        io.to(socket.id).emit('preJoinSettings', JSON.stringify({username: socket.user.username, roomName: room.name, isTeam: room.isTeam, teamSize: room.teamSize}));
     else
-        io.to(socket.id).emit('preJoinSettings', {isTeam: room.isTeam, teamSize: null});
+        io.to(socket.id).emit('preJoinSettings', JSON.stringify({username: socket.user.username, roomName: room.name, isTeam: room.isTeam, teamSize: null}));
 }

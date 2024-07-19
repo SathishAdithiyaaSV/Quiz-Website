@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './screens/Login';
 import Signup from './screens/Signup';
 import CreateRoom from './screens/CreateRoom';
+import Game from './screens/Game';
 //import Signup from './components/Signup';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/create" element={<CreateRoom />} />
+            <Route path="/room/:roomId" element={<Game />} />
           </Routes>
         </div>
       </div>
