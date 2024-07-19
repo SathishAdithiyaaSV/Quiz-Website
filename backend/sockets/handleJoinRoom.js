@@ -41,7 +41,7 @@ export const handleJoinRoom = async (socket, details) => {
     for (member of members)
     {
         let memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
-//        console.log(memberSocket.id);
+        console.log(memberSocket.id);
         memberSocket.join(roomId);
     }
     io.to(socket.id).emit('privateMessage', "Team saved successfully and added to room");
