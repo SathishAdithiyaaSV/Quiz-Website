@@ -28,7 +28,15 @@ const Login = () => {
       });
 
       const json = await response.json();
-      localStorage.setItem("jwtToken", json.token);
+      if(json.token)
+      {
+        localStorage.setItem("jwtToken", json.token);
+        alert("Login successful");
+      }
+      else if(json.error)
+        alert("Error: " + json.error);
+      else if(json.message)
+        alert("Message: " + json.message);
   };
 
   return (

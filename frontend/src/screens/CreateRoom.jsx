@@ -134,6 +134,7 @@ const CreateRoom = () => {
     });
 
     const json = await response.json();
+    alert(json.message);
   };
 
   const handleSettingsChange = (e) => {

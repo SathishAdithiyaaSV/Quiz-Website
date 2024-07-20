@@ -38,7 +38,6 @@ const createRound = async (roundProperties) => {
 
 export const createRoom = async (req, res) => {
     var properties = req.body;
-    console.log(req.user);
     try {
         for(var i = 0; i < properties.rounds.length; i++) {
             const newRound = await createRound(properties.rounds[i]);
@@ -50,7 +49,8 @@ export const createRoom = async (req, res) => {
             properties.settings=await createSettings(properties.settings);
         const room = new Room(properties);
         const newRoom = await room.save();
-        res.status(201).json(newRoom);
+        await User.updateOne({_id: req.user._id}, {$push : {rooms: newRoom._id}});
+        res.status(201).json({message: 'Room created successfully'});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

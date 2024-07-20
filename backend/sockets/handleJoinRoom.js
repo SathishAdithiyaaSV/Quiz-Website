@@ -11,17 +11,23 @@ export const handleJoinRoom = async (socket, details) => {
     var username = "";
     var members = [];
     var admin;
+    console.log(users);
     for(username of users)
     {
         const user = await User.findOne({ username });
         if(user)
         {
+            if(user.rooms.includes(roomObjId))
+            {
+                io.to(socket._id).emit('privateMessage', `${username} is already in the room`);
+                return;
+            }
             members.push(user._id)
         }
         else
         {
-            io.to(socket._id).emit('privateMessage', "Username does not exists");
-            break;
+            io.to(socket._id).emit('privateMessage', `${username} does not exists`);
+            return;
         }
     }
 
@@ -43,6 +49,7 @@ export const handleJoinRoom = async (socket, details) => {
         let memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
         console.log(memberSocket.id);
         memberSocket.join(roomId);
+        await User.updateOne({_id: memberSocket.user._id}, {$push : {rooms: roomObjId}});
     }
     io.to(socket.id).emit('privateMessage', "Team saved successfully and added to room");
     

@@ -23,10 +23,15 @@ const GamePage = () => {
 
         const handlePreJoinSettings = (details) => {
             const parsedDetails = JSON.parse(details);
-            setRoomName(parsedDetails.roomName);
-            setIsTeam(parsedDetails.isTeam);
-            setTeamSize(parsedDetails.teamSize);
-            setUsername(parsedDetails.username);
+            if(parsedDetails.inRoom)
+                setInGame(true);
+            else
+            {
+                setRoomName(parsedDetails.roomName);
+                setIsTeam(parsedDetails.isTeam);
+                setTeamSize(parsedDetails.teamSize);
+                setUsername(parsedDetails.username);
+            }
         };
 
         const handlePrivateMessage = (message) => {
@@ -58,7 +63,8 @@ const GamePage = () => {
     const handleClick = () => {
         if (socket) {
             socket.emit('joinRoom', JSON.stringify({ roomId, teamName, users }));
-            setInGame(true); // Switch to the GameRoom component
+            socket.on('privateMessage', (message) => alert(message));
+ //           setInGame(true); // Switch to the GameRoom component
         }
     };
 

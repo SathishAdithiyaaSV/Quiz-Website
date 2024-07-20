@@ -15,8 +15,16 @@ export const handleShowPreJoinSettings = async (socket, details) => {
         io.to(socket.id).emit('privateMessage', "Room does not exist");
         return;
     }
-    if(room.isTeam)
-        io.to(socket.id).emit('preJoinSettings', JSON.stringify({username: socket.user.username, roomName: room.name, isTeam: room.isTeam, teamSize: room.teamSize}));
+    if(socket.user.rooms.includes(roomObjId))
+    {
+        socket.join(roomId);
+        io.to(socket.id).emit('preJoinSettings', JSON.stringify({inRoom: true}));
+    }
     else
-        io.to(socket.id).emit('preJoinSettings', JSON.stringify({username: socket.user.username, roomName: room.name, isTeam: room.isTeam, teamSize: null}));
+    {
+        if(room.isTeam)
+            io.to(socket.id).emit('preJoinSettings', JSON.stringify({username: socket.user.username, roomName: room.name, isTeam: room.isTeam, teamSize: room.teamSize}));
+        else
+            io.to(socket.id).emit('preJoinSettings', JSON.stringify({username: socket.user.username, roomName: room.name, isTeam: room.isTeam, teamSize: null}));
+    }
 }

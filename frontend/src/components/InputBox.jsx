@@ -7,7 +7,8 @@ const InputBox = ({ no, users, setUsers }) => {
         const newUsername = e.target.value;
         setUsername(newUsername);
 
-        const updatedUsers = [...users, newUsername];
+        const updatedUsers = [...users];
+        updatedUsers[no - 2] = newUsername;
         setUsers(updatedUsers);
     };
 
