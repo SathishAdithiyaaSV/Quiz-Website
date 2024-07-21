@@ -4,17 +4,18 @@ import Login from './screens/Login';
 import Signup from './screens/Signup';
 import CreateRoom from './screens/CreateRoom';
 import Game from './screens/Game';
-//import Signup from './components/Signup';
+import QuizRoom from './screens/QuizRoom';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="max-w-md w-full space-y-8">
+        <div className="w-full">
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/create" element={<CreateRoom />} />
+            <Route path="/" element={<QuizRoom />} />
             <Route path="/room/:roomId" element={<Game />} />
           </Routes>
         </div>
