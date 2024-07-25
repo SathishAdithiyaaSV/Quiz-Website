@@ -4,7 +4,6 @@ import Login from './screens/Login';
 import Signup from './screens/Signup';
 import CreateRoom from './screens/CreateRoom';
 import Game from './screens/Game';
-import QuizRoom from './screens/QuizRoom';
 
 function App() {
   return (
@@ -15,8 +14,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/create" element={<CreateRoom />} />
-            <Route path="/" element={<QuizRoom />} />
-            <Route path="/room/:roomId" element={<Game />} />
+           <Route path="/room/:roomId" element={<Game />} />
           </Routes>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import createSocket from '../socket';
 import RoomPreJoin from './RoomPreJoin'; // Adjust the import path as necessary
-// import GameRoom from './GameRoom'; // Adjust the import path as necessary
+import QuizRoom from './QuizRoom';
 import { useParams } from 'react-router-dom';
 
 const socket = createSocket(localStorage.getItem('jwtToken'));
@@ -15,6 +15,7 @@ const GamePage = () => {
     const [teamName, setTeamName] = useState('');
     const [inGame, setInGame] = useState(false);
     const [teamSize, setTeamSize] = useState(0);
+    const [isHost, setIsHost] = useState(false);
     const { roomId } = useParams();
 
     useEffect(() => {
@@ -24,7 +25,11 @@ const GamePage = () => {
         const handlePreJoinSettings = (details) => {
             const parsedDetails = JSON.parse(details);
             if(parsedDetails.inRoom)
+            {
                 setInGame(true);
+                if(parsedDetails.isHost)
+                    setIsHost(true);
+            }
             else
             {
                 setRoomName(parsedDetails.roomName);
@@ -72,14 +77,12 @@ const GamePage = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
             {isConnected ? (
                 inGame ? (
-                    /* Uncomment and use GameRoom component when ready
-                    <GameRoom
-                        roomName={roomName}
-                        userName={socket.user.username}
+                    <QuizRoom
+                        socket={socket}
+                        roomId={roomId}
                         teamName={teamName}
-                        users={users}
-                    /> */
-                    null
+                        isHost={isHost}
+                    /> 
                 ) : (
                     <RoomPreJoin
                         roomName={roomName}

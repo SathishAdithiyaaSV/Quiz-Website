@@ -3,12 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
 import Confetti from 'react-confetti';
 
-const Quiz = ({ question, questionType, points, time, buzzer, options, correctOption }) => {
+const Question = ({ question, qnNo, questionType, points, time, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, answered, handleBuzzer }) => {
   const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(null);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [textAnswer, setTextAnswer] = useState('');
+  const [userAnswer, setUserAnswer] = useState('');
   const [isBuzzerPressed, setIsBuzzerPressed] = useState(false);
 
   function getInitialTimeLeft() {
@@ -19,6 +16,8 @@ const Quiz = ({ question, questionType, points, time, buzzer, options, correctOp
     }
     return time;
   }
+
+
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
@@ -49,33 +48,18 @@ const Quiz = ({ question, questionType, points, time, buzzer, options, correctOp
   }, [time]);
 
   const handleOptionClick = (option) => {
-    setSelectedOption(option);
-    if (option === correctOption) {
-      setIsCorrect(true);
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 5000); // Hide confetti after 5 seconds
-    } else {
-      setIsCorrect(false);
-    }
-  };
-
-  const handleBuzzer = () => {
-    setIsBuzzerPressed(true);
+    setUserAnswer(option);
+    socket.emit('submitAnswer', JSON.stringify({roomId: roomId, teamId: teamId, qnNo: qnNo, answerSubmitted: option, round: round}));
   };
 
   const handleTextSubmit = () => {
-    if (textAnswer.trim().toLowerCase() === correctOption.trim().toLowerCase()) {
-      setIsCorrect(true);
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 5000); // Hide confetti after 5 seconds
-    } else {
-      setIsCorrect(false);
-    }
+    setUserAnswer(textAnswer.trim().toLowerCase());
+    socket.emit('submitAnswer', JSON.stringify({roomId: roomId, teamId: teamId, qnNo: qnNo, answerSubmitted: userAnswer, round: round}));
   };
 
   return (
     <div className="relative bg-gray-800 p-8 rounded-lg">
-      {showConfetti && <Confetti />}
+      {answered && answeredCorrectly && <Confetti />}
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Quiz</h1>
       </div>
@@ -106,8 +90,8 @@ const Quiz = ({ question, questionType, points, time, buzzer, options, correctOp
               <div key={index} className="w-full md:w-1/2 px-2 mb-4">
                 <button
                   className={`w-full p-2 rounded ${
-                    selectedOption === option
-                      ? isCorrect
+                    answered
+                      ? answeredCorrectly
                         ? 'bg-green-500'
                         : 'bg-red-500'
                       : 'bg-blue-500 hover:bg-blue-600'
@@ -132,8 +116,8 @@ const Quiz = ({ question, questionType, points, time, buzzer, options, correctOp
             type="text"
             className="w-full p-2 rounded bg-gray-700 border border-gray-600"
             placeholder="Type your answer here..."
-            value={textAnswer}
-            onChange={(e) => setTextAnswer(e.target.value)}
+            value={userAnswer}
+            onChange={(e) => setUserAnswer(e.target.value)}
             disabled={!isBuzzerPressed}
           />
           <button
@@ -148,8 +132,9 @@ const Quiz = ({ question, questionType, points, time, buzzer, options, correctOp
       {buzzer && (
         <div className="mt-4">
           <button
-            onClick={handleBuzzer}
+            onClick={ () => { setMainTime(timeLeft) ; handleBuzzer()}}
             className="w-full p-4 bg-red-600 hover:bg-red-700 rounded flex items-center justify-center"
+            disabled={!buzzerActive}
           >
             <FontAwesomeIcon icon={faBell} className="mr-2" /> Buzzer
           </button>
@@ -159,4 +144,4 @@ const Quiz = ({ question, questionType, points, time, buzzer, options, correctOp
   );
 };
 
-export default Quiz;
+export default Question;

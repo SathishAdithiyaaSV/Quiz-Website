@@ -47,7 +47,7 @@ export const handleSocketConnection = async (socket) => {
         await handleShowRules(socket, details);
     });
 
-    socket.on('showNextQn', async (details) => {
+    socket.on('showNextQuestion', async (details) => {
         await handleShowNextQn(socket, details);
     });
 

@@ -3,21 +3,46 @@ import Room from "../models/roomModel.js";
 import Team from "../models/teamModel.js";
 import Question from "../models/questionModel.js";
 import Round from "../models/roundModel.js";
+import Settings from "../models/settingsModel.js";
 import { userSocketMap } from "./socketHandler.js";
 import { io } from "../app.js";
 import mongoose from "mongoose";
 
 export const handleBuzzIn = async (socket, details) => {
     const { roomId, round, qnNo, teamName } = JSON.parse(details);
-    const roomObjId = mongoose.Types.ObjectId(roomId)
+    console.log(details);
+    const roomObjId = new mongoose.Types.ObjectId(roomId)
     const room = await Room.findById(roomObjId);
+    console.log(details);
     if (!room) {
         io.to(socket.id).emit('privateMessage', "Room does not exist");
         return;
     }
-    const rnd = await Round.findById(room.rounds[round+1]);
-    const qn = await Question.findById(rnd.questions[qnNo +1 ]);
+    const rnd = await Round.findById(room.rounds[round]);
+    const qn = await Question.findById(rnd.questions[qnNo]);
     const team = await Team.findOne({ name: teamName });
+    const settings = await Settings.findById(room.settings);
     await Question.updateOne({_id: qn._id}, {$set : {buzzedIn: team._id, buzzNo: qn.buzzNo + 1 }});
-    io.in(roomName).emit('buzzedIn', {team: team, qn: qn});
+    for (const member of team.members) {
+        const memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
+        var time;
+        var points;
+        if(qn.buzzNo == 1)
+        {
+            time = settings.timeAfterFirstBuzz;
+            points = settings.firstBuzzAnsweredCorrect;
+        }
+        else if(qn.buzzNo == 2)
+        {
+            time = settings.timeAfterSecondBuzz;
+            points = settings.secondBuzzAnsweredCorrect;
+        } 
+        else if(qn.buzzNo == 3)
+        {
+            time = settings.timeAfterThirdBuzz;
+            points = settings.thirdBuzzAnsweredCorrect;
+        }
+        memberSocket.emit('buzzedInTeam', JSON.stringify({points: points, time: time}));
+    }
+    io.in(roomId).emit('buzzedIn', JSON.stringify({teamName: team.name, qn: qn}));
 }

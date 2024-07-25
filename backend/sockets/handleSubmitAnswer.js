@@ -10,15 +10,15 @@ import mongoose from "mongoose";
 
 export const handleSubmitAnswer = async (socket, details) => {
     const { roomId, round, qnNo, teamName, ansSubmitted } = JSON.parse(details);
-    const roomObjId = mongoose.Types.ObjectId(roomId);
+    const roomObjId = new mongoose.Types.ObjectId(roomId);
     const room = await Room.findById(roomObjId);
     if (!room) {
         io.to(socket.id).emit('privateMessage', "Room does not exist");
         return;
     }
 
-    const rnd = await Round.findById(room.rounds[round+1]);
-    const qn = await Question.findById(rnd.questions[qnNo +1 ]);
+    const rnd = await Round.findById(room.rounds[round]);
+    const qn = await Question.findById(rnd.questions[qnNo]);
     const team = await Team.findOne({ name: teamName });
     const qnSettings = await Settings.findById(qn.settings);
     
@@ -59,6 +59,6 @@ export const handleSubmitAnswer = async (socket, details) => {
     const Teams = room.teams.map( async team => await Team.findById(team))
     const Leaderboard = Teams.sort({ points: -1 }); // sort descending
     //return users.map(user => ({ id: user.id, score: user.score }));
-    io.in(roomName).emit('answered', data);
-    io.in(roomName).emit('leaderboard', Leaderboard);
+    io.in(roomId).emit('answered', JSON.stringify(data));
+    io.in(roomId).emit('leaderboard', JSON.stringify(Leaderboard));
 }

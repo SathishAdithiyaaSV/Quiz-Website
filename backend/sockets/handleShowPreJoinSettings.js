@@ -18,7 +18,13 @@ export const handleShowPreJoinSettings = async (socket, details) => {
     if(socket.user.rooms.includes(roomObjId))
     {
         socket.join(roomId);
-        io.to(socket.id).emit('preJoinSettings', JSON.stringify({inRoom: true}));
+        if(socket.user._id.toString() === room.host.toString()) 
+        {
+            io.to(socket.id).emit('preJoinSettings', JSON.stringify({inRoom: true, isHost:true}));
+            console.log(socket.id);
+        }
+        else
+            io.to(socket.id).emit('preJoinSettings', JSON.stringify({inRoom: true}));
     }
     else
     {
