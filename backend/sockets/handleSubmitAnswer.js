@@ -20,10 +20,12 @@ export const handleSubmitAnswer = async (socket, details) => {
     const rnd = await Round.findById(room.rounds[round]);
     const qn = await Question.findById(rnd.questions[qnNo]);
     const team = await Team.findOne({ name: teamName });
-    const qnSettings = await Settings.findById(qn.settings);
+    const qnSettings = await Settings.findById(room.settings);
     
     var data = {};
     var pts;
+    console.log(ansSubmitted);
+    console.log(qn.answer);
     if (ansSubmitted === qn.answer) {
         //var member;
         /*for (member of team.members)
@@ -57,7 +59,7 @@ export const handleSubmitAnswer = async (socket, details) => {
     }
     await Team.updateOne({_id: team._id}, {$inc: {points: pts}});
     const Teams = room.teams.map( async team => await Team.findById(team))
-    const Leaderboard = Teams.sort({ points: -1 }); // sort descending
+    const Leaderboard = Teams.sort((a, b) => b.points - a.points); // sort descending
     //return users.map(user => ({ id: user.id, score: user.score }));
     io.in(roomId).emit('answered', JSON.stringify(data));
     io.in(roomId).emit('leaderboard', JSON.stringify(Leaderboard));

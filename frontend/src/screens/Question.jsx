@@ -3,21 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
 import Confetti from 'react-confetti';
 
-const Question = ({ question, qnNo, questionType, points, time, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, answered, handleBuzzer }) => {
-  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft);
+const Question = ({ question, qnNo, questionType, points, time, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft }) => {
   const [userAnswer, setUserAnswer] = useState('');
-  const [isBuzzerPressed, setIsBuzzerPressed] = useState(false);
-
-  function getInitialTimeLeft() {
-    const storedStartTime = localStorage.getItem('startTime');
-    if (storedStartTime) {
-      const elapsedTime = Math.floor((Date.now() - parseInt(storedStartTime)) / 1000);
-      return Math.max(time - elapsedTime, 0);
-    }
-    return time;
-  }
-
-
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
@@ -49,17 +36,16 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
 
   const handleOptionClick = (option) => {
     setUserAnswer(option);
-    socket.emit('submitAnswer', JSON.stringify({roomId: roomId, teamId: teamId, qnNo: qnNo, answerSubmitted: option, round: round}));
+    socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: option}));
   };
 
   const handleTextSubmit = () => {
-    setUserAnswer(textAnswer.trim().toLowerCase());
-    socket.emit('submitAnswer', JSON.stringify({roomId: roomId, teamId: teamId, qnNo: qnNo, answerSubmitted: userAnswer, round: round}));
+    socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer}));
   };
 
   return (
     <div className="relative bg-gray-800 p-8 rounded-lg">
-      {answered && answeredCorrectly && <Confetti />}
+      {showConfetti && <Confetti />}
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Quiz</h1>
       </div>
@@ -97,7 +83,7 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
                       : 'bg-blue-500 hover:bg-blue-600'
                   }`}
                   onClick={() => handleOptionClick(option)}
-                  disabled={!isBuzzerPressed}
+                  disabled={!qnActive}
                 >
                   {option}
                 </button>
@@ -118,12 +104,12 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
             placeholder="Type your answer here..."
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
-            disabled={!isBuzzerPressed}
+            disabled={!qnActive}
           />
           <button
             className="w-full p-2 mt-4 bg-blue-500 hover:bg-blue-600 rounded"
             onClick={handleTextSubmit}
-            disabled={!isBuzzerPressed}
+            disabled={!qnActive}
           >
             Submit
           </button>
@@ -132,7 +118,7 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
       {buzzer && (
         <div className="mt-4">
           <button
-            onClick={ () => { setMainTime(timeLeft) ; handleBuzzer()}}
+            onClick={ () => {handleBuzzer()}}
             className="w-full p-4 bg-red-600 hover:bg-red-700 rounded flex items-center justify-center"
             disabled={!buzzerActive}
           >

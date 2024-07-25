@@ -22,6 +22,8 @@ export const handleShowNextQn = async (socket, details) => {
     qn["points"] = settings.points;
     qn["time"] = settings.time;
     qn["buzzer"] = settings.buzzer;
+    qn["qnNo"] = qnNo;
+    qn["round"] = round;
     delete qn["answer"];
     console.log(qn);
     io.in(roomId).emit('question', JSON.stringify(qn));

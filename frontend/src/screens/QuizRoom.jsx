@@ -19,44 +19,74 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   const [answered, setAnswered] = useState(false);
   const [round, setRound] = useState(-1);
   const [qnNo, setQnNo] = useState(0);
-  const [isBuzzerPressed, setIsBuzzerPressed] = useState(false);
+  const [qnActive, setQnActive] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft);
+
+  function getInitialTimeLeft() {
+    const storedStartTime = localStorage.getItem('startTime');
+    if (storedStartTime) {
+      const elapsedTime = Math.floor((Date.now() - parseInt(storedStartTime)) / 1000);
+      return Math.max(time - elapsedTime, 0);
+    }
+    return time;
+  }
 
   useEffect(() => {
     const handleQuestion = (qn) => {
       localStorage.setItem('startTime', Date.now().toString());
       const parsedQn = JSON.parse(qn);
+      setShowConfetti(false);
       setType(parsedQn.type);
       setQuestion(parsedQn.text);
       setOptions(parsedQn.options);
       setPoints(parsedQn.points);
       setTime(parsedQn.time);
       setBuzzer(parsedQn.buzzer);
+      setRound(parsedQn.round);
+      setQnNo(parsedQn.qnNo);
+      setBuzzerActive(true);
+      if (parsedQn.buzzer)
+        setQnActive(false);
+      else
+        setQnActive(true);
       setActiveComponent(isHost ? 'HostQn' : 'Question');
     };
 
     const handleBuzzedIn = (details) => {
       const parsedDetails = JSON.parse(details);
       setBuzzerActive(false);
+      setQnActive(true);
       setNotification(`Buzzed in by ${parsedDetails.teamName}`);
+      setMainTime(timeLeft);
     };
 
     const handleBuzzedInTeam = (details) => {
       localStorage.setItem('startTime', Date.now().toString());
       const parsedDetails = JSON.parse(details);
+      setBuzzerActive(false);
+      setQnActive(true);
       setPoints(parsedDetails.points);
       setTime(parsedDetails.time);
+
     };
 
     const handleAnswered = (details) => {
       const parsedDetails = JSON.parse(details);
       if (parsedDetails.answeredCorrectly) {
-        if (parsedDetails.team === teamName) setAnswered(true);
+        if (parsedDetails.team === teamName) {
+          setAnswered(true);
+          setShowConfetti(true);
+        }
         setAnsweredCorrectly(true);
       } else {
         if (parsedDetails.team === teamName) setAnswered(true);
         setTime(mainTime);
         localStorage.setItem('startTime', Date.now().toString());
         setAnsweredCorrectly(false);
+        setBuzzerActive(true);
+        if(buzzer)
+          setQnActive(false);
       }
     };
 
@@ -85,6 +115,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             time={time}
             buzzer={buzzer}
             buzzerActive={buzzerActive}
+            qnActive={qnActive}
             options={options}
             notification={notification}
             teamName={teamName}
@@ -95,7 +126,9 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             answered={answered}
             handleBuzzer={handleBuzzer}
             setMainTime={setMainTime}
-            isBuzzerPressed={isBuzzerPressed}
+            showConfetti={showConfetti}
+            timeLeft={timeLeft}
+            setTimeLeft={setTimeLeft}
           />
         );
       case 'HostQn':
@@ -124,21 +157,19 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   };
 
   const handleShowNextQn = () => {
-    socket.emit('showNextQuestion', JSON.stringify({ roomId, round, qnNo }));
+    socket.emit('showNextQuestion', JSON.stringify({ roomId, round, qnNo : qnNo +1 }));
     setQnNo(qnNo + 1);
   };
 
   const handleStartNextRound = () => {
     socket.emit('showNextQuestion', JSON.stringify({ roomId, round: round+1, qnNo: 0 }));
     setRound(round + 1);
-    setQnNo(1);
+    setQnNo(0);
   };
 
   const handleBuzzer = () => {
-    setIsBuzzerPressed(true);
-    socket.emit('buzzIn', JSON.stringify({ roomId: roomId, teamName: teamName, qnNo: qnNo, round: round }));
+    socket.emit('buzzIn', JSON.stringify({ roomId, teamName, qnNo, round }));
   };
-
 
   return (
     <div className="min-h-screen min-w-screen bg-gray-900 text-white flex flex-col lg:flex-row">

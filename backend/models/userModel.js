@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
         unique: true,
     },
     password: String,
-    rooms: [{type: mongoose.Schema.Types.ObjectId, ref: 'Room'}]
+    rooms: [{type: mongoose.Schema.Types.ObjectId, ref: 'Room'}],
+    teams: [{type: mongoose.Schema.Types.ObjectId, ref: 'Team'}]
 });
 
 const User = mongoose.model('User', userSchema);

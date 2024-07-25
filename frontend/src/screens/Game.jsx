@@ -29,6 +29,8 @@ const GamePage = () => {
                 setInGame(true);
                 if(parsedDetails.isHost)
                     setIsHost(true);
+                else
+                    setTeamName(parsedDetails.teamName);
             }
             else
             {

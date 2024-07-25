@@ -27,17 +27,18 @@ export const handleBuzzIn = async (socket, details) => {
         const memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
         var time;
         var points;
-        if(qn.buzzNo == 1)
+        if(qn.buzzNo + 1 == 1)
         {
             time = settings.timeAfterFirstBuzz;
             points = settings.firstBuzzAnsweredCorrect;
+            console.log({points: points, time: time});
         }
-        else if(qn.buzzNo == 2)
+        else if(qn.buzzNo + 1 == 2)
         {
             time = settings.timeAfterSecondBuzz;
             points = settings.secondBuzzAnsweredCorrect;
         } 
-        else if(qn.buzzNo == 3)
+        else if(qn.buzzNo + 1 == 3)
         {
             time = settings.timeAfterThirdBuzz;
             points = settings.thirdBuzzAnsweredCorrect;
