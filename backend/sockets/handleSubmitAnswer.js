@@ -55,7 +55,7 @@ export const handleSubmitAnswer = async (socket, details) => {
             pts= -qnSettings.secondBuzzAnsweredIncorrect;
         else if (qn.buzzNo === 3)
             pts= -qnSettings.thirdBuzzAnsweredIncorrect;
-        data = {team: teamName, answeredCorrectly: false, correctAnswer: qn.answer};
+        data = {team: teamName, answeredCorrectly: false, correctAnswer: qn.answer, mainTime: qn.mainTime};
     }
     await Team.updateOne({_id: team._id}, {$inc: {points: pts}});
     const Teams = room.teams.map( async team => await Team.findById(team))

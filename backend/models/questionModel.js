@@ -9,6 +9,7 @@ const questionSchema = new mongoose.Schema({
     buzzNo: {type: Number, default: 0},
     answer: { type: String, required: true },
     settings: { type: mongoose.Schema.Types.ObjectId, ref: 'Settings' },
+    mainTime: { type: Number },
 });
 
 export default mongoose.model('Question', questionSchema);

@@ -36,11 +36,13 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
 
   const handleOptionClick = (option) => {
     setUserAnswer(option);
-    socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: option}));
+    if(timeLeft !== 0)
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: option}));
   };
 
   const handleTextSubmit = () => {
-    socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer}));
+    if(timeLeft !== 0)
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer}));
   };
 
   return (
@@ -118,7 +120,7 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
       {buzzer && (
         <div className="mt-4">
           <button
-            onClick={ () => {handleBuzzer()}}
+            onClick={ () => {console.log(timeLeft); handleBuzzer()}}
             className="w-full p-4 bg-red-600 hover:bg-red-700 rounded flex items-center justify-center"
             disabled={!buzzerActive}
           >

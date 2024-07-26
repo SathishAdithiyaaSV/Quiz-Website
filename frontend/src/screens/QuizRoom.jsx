@@ -58,12 +58,12 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
       setBuzzerActive(false);
       setQnActive(true);
       setNotification(`Buzzed in by ${parsedDetails.teamName}`);
-      setMainTime(timeLeft);
     };
 
     const handleBuzzedInTeam = (details) => {
       localStorage.setItem('startTime', Date.now().toString());
       const parsedDetails = JSON.parse(details);
+      console.log(timeLeft);
       setBuzzerActive(false);
       setQnActive(true);
       setPoints(parsedDetails.points);
@@ -81,7 +81,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
         setAnsweredCorrectly(true);
       } else {
         if (parsedDetails.team === teamName) setAnswered(true);
-        setTime(mainTime);
+        setTime(parsedDetails.mainTime);
         localStorage.setItem('startTime', Date.now().toString());
         setAnsweredCorrectly(false);
         setBuzzerActive(true);
@@ -101,7 +101,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
       socket.off('buzzedInTeam', handleBuzzedInTeam);
       socket.off('answered', handleAnswered);
     };
-  }, [socket, teamName, mainTime]);
+  }, [socket]);
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -145,6 +145,8 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             handleShowNextQn={handleShowNextQn}
             notification={notification}
             roomId={roomId}
+            timeLeft={timeLeft}
+            setTimeLeft={setTimeLeft}
           />
         );
       case 'Leaderboard':
@@ -168,7 +170,9 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   };
 
   const handleBuzzer = () => {
-    socket.emit('buzzIn', JSON.stringify({ roomId, teamName, qnNo, round }));
+    if(timeLeft !== 0)
+      socket.emit('buzzIn', JSON.stringify({ roomId, teamName, qnNo, round, mainTime: timeLeft }));
+    console.log(timeLeft);
   };
 
   return (

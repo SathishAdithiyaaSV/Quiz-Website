@@ -2,17 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
 
-const HostQn = ({ question, questionType, points, time, buzzer, options, handleShowNextQn }) => {
-  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft);
+const HostQn = ({ question, questionType, points, time, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft }) => {
 
-  function getInitialTimeLeft() {
-    const storedStartTime = localStorage.getItem('startTime');
-    if (storedStartTime) {
-      const elapsedTime = Math.floor((Date.now() - parseInt(storedStartTime)) / 1000);
-      return Math.max(time - elapsedTime, 0);
-    }
-    return time;
-  }
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
