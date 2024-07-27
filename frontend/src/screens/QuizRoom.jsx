@@ -22,6 +22,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   const [qnActive, setQnActive] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft);
+  const [isPaused, setIsPaused] = useState(false);
 
   function getInitialTimeLeft() {
     const storedStartTime = localStorage.getItem('startTime');
@@ -41,6 +42,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
       setQuestion(parsedQn.text);
       setOptions(parsedQn.options);
       setPoints(parsedQn.points);
+      setIsPaused(false);
       setTime(parsedQn.time);
       setBuzzer(parsedQn.buzzer);
       setRound(parsedQn.round);
@@ -56,7 +58,8 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
     const handleBuzzedIn = (details) => {
       const parsedDetails = JSON.parse(details);
       setBuzzerActive(false);
-      setQnActive(true);
+      setQnActive(false);
+      setIsPaused(true);
       setNotification(`Buzzed in by ${parsedDetails.teamName}`);
     };
 
@@ -67,6 +70,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
       setBuzzerActive(false);
       setQnActive(true);
       setPoints(parsedDetails.points);
+      setIsPaused(false); 
       setTime(parsedDetails.time);
 
     };
@@ -79,8 +83,10 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
           setShowConfetti(true);
         }
         setAnsweredCorrectly(true);
+        setIsPaused(true);
       } else {
         if (parsedDetails.team === teamName) setAnswered(true);
+        setIsPaused(false);
         setTime(parsedDetails.mainTime);
         localStorage.setItem('startTime', Date.now().toString());
         setAnsweredCorrectly(false);
@@ -113,6 +119,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             questionType={type}
             points={points}
             time={time}
+            isPaused={isPaused}
             buzzer={buzzer}
             buzzerActive={buzzerActive}
             qnActive={qnActive}
@@ -139,6 +146,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             questionType={type}
             points={points}
             time={time}
+            isPaused={isPaused}
             setMainTime={setMainTime}
             buzzer={buzzer}
             options={options}

@@ -23,6 +23,7 @@ export const handleBuzzIn = async (socket, details) => {
     const team = await Team.findOne({ name: teamName });
     const settings = await Settings.findById(room.settings);
     await Question.updateOne({_id: qn._id}, {$set : {buzzedIn: team._id, buzzNo: qn.buzzNo + 1, mainTime: mainTime}});
+    io.in(roomId).emit('buzzedIn', JSON.stringify({teamName: team.name, qn: qn}));
     for (const member of team.members) {
         const memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
         var time;
@@ -45,5 +46,4 @@ export const handleBuzzIn = async (socket, details) => {
         }
         memberSocket.emit('buzzedInTeam', JSON.stringify({points: points, time: time}));
     }
-    io.in(roomId).emit('buzzedIn', JSON.stringify({teamName: team.name, qn: qn}));
 }

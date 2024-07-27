@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
 import Confetti from 'react-confetti';
 
-const Question = ({ question, qnNo, questionType, points, time, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft }) => {
+const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft }) => {
   const [userAnswer, setUserAnswer] = useState('');
 
   useEffect(() => {
@@ -12,12 +12,14 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
     }
 
     const interval = setInterval(() => {
+      if(!isPaused){
       const elapsedTime = Math.floor((Date.now() - parseInt(localStorage.getItem('startTime'))) / 1000);
       setTimeLeft(Math.max(time - elapsedTime, 0));
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [time]);
+  }, [time, isPaused]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -32,17 +34,23 @@ const Question = ({ question, qnNo, questionType, points, time, buzzer, options,
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [time]);
+  }, [time, isPaused]);
+
+  useEffect(() => {
+    if(qnActive && timeLeft === 0) {
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, timeOut: true}));
+    }
+  }, [qnActive, timeLeft]);
 
   const handleOptionClick = (option) => {
     setUserAnswer(option);
     if(timeLeft !== 0)
-      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: option}));
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: option, timeOut: false}));
   };
 
   const handleTextSubmit = () => {
     if(timeLeft !== 0)
-      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer}));
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer, timeOut: false}));
   };
 
   return (

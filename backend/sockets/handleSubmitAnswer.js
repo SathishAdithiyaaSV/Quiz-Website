@@ -9,7 +9,7 @@ import { io } from "../app.js";
 import mongoose from "mongoose";
 
 export const handleSubmitAnswer = async (socket, details) => {
-    const { roomId, round, qnNo, teamName, ansSubmitted } = JSON.parse(details);
+    const { roomId, round, qnNo, teamName, ansSubmitted, timeOut } = JSON.parse(details);
     const roomObjId = new mongoose.Types.ObjectId(roomId);
     const room = await Room.findById(roomObjId);
     if (!room) {
@@ -21,7 +21,9 @@ export const handleSubmitAnswer = async (socket, details) => {
     const qn = await Question.findById(rnd.questions[qnNo]);
     const team = await Team.findOne({ name: teamName });
     const qnSettings = await Settings.findById(room.settings);
-    
+
+    if(timeOut && (socket.user._id.toString() !== team.admin.toString()))
+        return;
     var data = {};
     var pts;
     console.log(ansSubmitted);

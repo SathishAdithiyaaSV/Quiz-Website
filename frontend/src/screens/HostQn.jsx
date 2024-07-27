@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
 
-const HostQn = ({ question, questionType, points, time, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft }) => {
+const HostQn = ({ question, questionType, points, time, isPaused, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft }) => {
 
 
   useEffect(() => {
@@ -11,12 +11,14 @@ const HostQn = ({ question, questionType, points, time, buzzer, options, handleS
     }
 
     const interval = setInterval(() => {
+      if(!isPaused){
       const elapsedTime = Math.floor((Date.now() - parseInt(localStorage.getItem('startTime'))) / 1000);
       setTimeLeft(Math.max(time - elapsedTime, 0));
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [time]);
+  }, [time, isPaused]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -31,7 +33,7 @@ const HostQn = ({ question, questionType, points, time, buzzer, options, handleS
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [time]);
+  }, [time, isPaused]);
 
  
   return (
