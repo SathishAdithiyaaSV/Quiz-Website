@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
 import Confetti from 'react-confetti';
+import Notification from '../components/Notification';
 
-const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft }) => {
+const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, correctAnswer, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft }) => {
   const [userAnswer, setUserAnswer] = useState('');
+
+  useEffect(() => {
+      <Notification message={notification} />
+  }, [notification]);
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
@@ -86,10 +91,10 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
               <div key={index} className="w-full md:w-1/2 px-2 mb-4">
                 <button
                   className={`w-full p-2 rounded ${
-                    answered
+                    (option === correctAnswer)
                       ? answeredCorrectly
                         ? 'bg-green-500'
-                        : 'bg-red-500'
+                        : (answered ? 'bg-red-500': 'bg-blue-500 hover:bg-blue-600')
                       : 'bg-blue-500 hover:bg-blue-600'
                   }`}
                   onClick={() => handleOptionClick(option)}

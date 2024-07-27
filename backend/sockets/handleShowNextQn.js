@@ -25,6 +25,5 @@ export const handleShowNextQn = async (socket, details) => {
     qn["qnNo"] = qnNo;
     qn["round"] = round;
     delete qn["answer"];
-    console.log(qn);
     io.in(roomId).emit('question', JSON.stringify(qn));
 }

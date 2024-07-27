@@ -41,7 +41,7 @@ export const handleSubmitAnswer = async (socket, details) => {
             pts=qnSettings.secondBuzzAnsweredCorrect;
         else if (qn.buzzNo === 3)
             pts=qnSettings.thirdBuzzAnsweredCorrect;
-        data = {team: teamName, answeredCorrectly: true}
+        data = {team: teamName, answeredCorrectly: true, correctAnswer: qn.answer}
     }    
 
     else {
@@ -57,12 +57,16 @@ export const handleSubmitAnswer = async (socket, details) => {
             pts= -qnSettings.secondBuzzAnsweredIncorrect;
         else if (qn.buzzNo === 3)
             pts= -qnSettings.thirdBuzzAnsweredIncorrect;
-        data = {team: teamName, answeredCorrectly: false, correctAnswer: qn.answer, mainTime: qn.mainTime};
+        data = {team: teamName, answeredCorrectly: false, mainTime: qn.mainTime};
     }
     await Team.updateOne({_id: team._id}, {$inc: {points: pts}});
-    const Teams = room.teams.map( async team => await Team.findById(team))
-    const Leaderboard = Teams.sort((a, b) => b.points - a.points); // sort descending
-    //return users.map(user => ({ id: user.id, score: user.score }));
+    const teams = await Team.find({ _id: { $in: room.teams } });
+    const sortedTeams = teams.sort((a, b) => b.points - a.points);
+
+    // Emit the sorted leaderboard
     io.in(roomId).emit('answered', JSON.stringify(data));
-    io.in(roomId).emit('leaderboard', JSON.stringify(Leaderboard));
+    io.in(roomId).emit('leaderboard', JSON.stringify(sortedTeams.map(team => ({
+        name: team.name,
+        points: team.points
+    }))));
 }

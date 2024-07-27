@@ -23,6 +23,8 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft);
   const [isPaused, setIsPaused] = useState(false);
+  const [correctAnswer, setCorrectAnswer] = useState('');
+  const [leaderboard, setLeaderboard] = useState([]);
 
   function getInitialTimeLeft() {
     const storedStartTime = localStorage.getItem('startTime');
@@ -37,6 +39,9 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
     const handleQuestion = (qn) => {
       localStorage.setItem('startTime', Date.now().toString());
       const parsedQn = JSON.parse(qn);
+      setCorrectAnswer('');
+      setAnswered(false);
+      setAnsweredCorrectly(false);
       setShowConfetti(false);
       setType(parsedQn.type);
       setQuestion(parsedQn.text);
@@ -82,8 +87,10 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
           setAnswered(true);
           setShowConfetti(true);
         }
+        setCorrectAnswer(parsedDetails.correctAnswer);
         setAnsweredCorrectly(true);
         setIsPaused(true);
+        setNotification(`${parsedDetails.teamName} answered correctly!`);
       } else {
         if (parsedDetails.team === teamName) setAnswered(true);
         setIsPaused(false);
@@ -93,6 +100,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
         setBuzzerActive(true);
         if(buzzer)
           setQnActive(false);
+          setNotification(`${parsedDetails.teamName} answered incorrectly!`);
       }
     };
 
@@ -100,12 +108,20 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
     socket.on('buzzedIn', handleBuzzedIn);
     socket.on('buzzedInTeam', handleBuzzedInTeam);
     socket.on('answered', handleAnswered);
+    socket.on('leaderboard', (data) => {
+      const parsedData = JSON.parse(data);
+      setLeaderboard(parsedData);
+    });
 
     return () => {
       socket.off('question', handleQuestion);
       socket.off('buzzedIn', handleBuzzedIn);
       socket.off('buzzedInTeam', handleBuzzedInTeam);
       socket.off('answered', handleAnswered);
+      socket.off('leaderboard', (data) => {
+        const parsedData = JSON.parse(data);
+        setLeaderboard(parsedData);
+      });
     };
   }, [socket]);
 
@@ -136,6 +152,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             showConfetti={showConfetti}
             timeLeft={timeLeft}
             setTimeLeft={setTimeLeft}
+            correctAnswer={correctAnswer}
           />
         );
       case 'HostQn':
@@ -158,7 +175,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
           />
         );
       case 'Leaderboard':
-        return <Leaderboard />;
+        return <Leaderboard leaderboard={leaderboard} />
       case 'Rules':
         return <Rules />;
       default:

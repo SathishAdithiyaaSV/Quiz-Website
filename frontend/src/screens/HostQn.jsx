@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
+import Notification from '../components/Notification';
 
-const HostQn = ({ question, questionType, points, time, isPaused, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft }) => {
+const HostQn = ({ question, questionType, points, time, isPaused, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft, notification }) => {
 
+  useEffect(() => {
+    <Notification message={notification} />
+}, [notification]);
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
