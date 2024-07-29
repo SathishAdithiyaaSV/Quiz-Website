@@ -4,7 +4,7 @@ import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-sol
 import Confetti from 'react-confetti';
 import Notification from '../components/Notification';
 
-const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, correctAnswer, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft }) => {
+const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, correctAnswer, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft, buzzNo }) => {
   const [userAnswer, setUserAnswer] = useState('');
 
   useEffect(() => {
@@ -50,12 +50,12 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
   const handleOptionClick = (option) => {
     setUserAnswer(option);
     if(timeLeft !== 0)
-      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: option, timeOut: false}));
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: option, timeOut: false, buzzNo}));
   };
 
   const handleTextSubmit = () => {
     if(timeLeft !== 0)
-      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer, timeOut: false}));
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer, timeOut: false, buzzNo}));
   };
 
   return (

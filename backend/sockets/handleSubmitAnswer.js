@@ -9,7 +9,7 @@ import { io } from "../app.js";
 import mongoose from "mongoose";
 
 export const handleSubmitAnswer = async (socket, details) => {
-    const { roomId, round, qnNo, teamName, ansSubmitted, timeOut } = JSON.parse(details);
+    const { roomId, round, qnNo, teamName, ansSubmitted, timeOut, buzzNo } = JSON.parse(details);
     const roomObjId = new mongoose.Types.ObjectId(roomId);
     const room = await Room.findById(roomObjId);
     if (!room) {
@@ -26,8 +26,6 @@ export const handleSubmitAnswer = async (socket, details) => {
         return;
     var data = {};
     var pts;
-    console.log(ansSubmitted);
-    console.log(qn.answer);
     if (ansSubmitted === qn.answer) {
         //var member;
         /*for (member of team.members)
@@ -57,8 +55,12 @@ export const handleSubmitAnswer = async (socket, details) => {
             pts= -qnSettings.secondBuzzAnsweredIncorrect;
         else if (qn.buzzNo === 3)
             pts= -qnSettings.thirdBuzzAnsweredIncorrect;
-        data = {team: teamName, answeredCorrectly: false, mainTime: qn.mainTime};
+        if(qnSettings.numberOfBuzzes > buzzNo)
+            data = {team: teamName, answeredCorrectly: false, mainTime: qn.mainTime};
+        else
+            data = {team: teamName, answeredCorrectly: false, correctAnswer: qn.answer, mainTime: qn.mainTime, buzzesLimitExceeded: true};
     }
+    console.log(team);
     await Team.updateOne({_id: team._id}, {$inc: {points: pts}});
     const teams = await Team.find({ _id: { $in: room.teams } });
     const sortedTeams = teams.sort((a, b) => b.points - a.points);

@@ -10,10 +10,8 @@ import mongoose from "mongoose";
 
 export const handleBuzzIn = async (socket, details) => {
     const { roomId, round, qnNo, teamName, mainTime } = JSON.parse(details);
-    console.log(details);
     const roomObjId = new mongoose.Types.ObjectId(roomId)
     const room = await Room.findById(roomObjId);
-    console.log(details);
     if (!room) {
         io.to(socket.id).emit('privateMessage', "Room does not exist");
         return;
@@ -23,7 +21,7 @@ export const handleBuzzIn = async (socket, details) => {
     const team = await Team.findOne({ name: teamName });
     const settings = await Settings.findById(room.settings);
     await Question.updateOne({_id: qn._id}, {$set : {buzzedIn: team._id, buzzNo: qn.buzzNo + 1, mainTime: mainTime}});
-    io.in(roomId).emit('buzzedIn', JSON.stringify({teamName: team.name}));
+    io.in(roomId).emit('buzzedIn', JSON.stringify({teamName: team.name, buzzNo: qn.buzzNo + 1}));
     for (const member of team.members) {
         const memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
         var time;

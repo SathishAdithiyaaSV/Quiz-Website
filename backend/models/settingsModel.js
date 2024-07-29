@@ -5,6 +5,7 @@ const settingsSchema = new mongoose.Schema({
     time: { type: String },
     points: { type: Number},
     buzzer: { type: Boolean },
+    numberOfBuzzes: { type: Number },
     answerOnBuzz : { type: Boolean },
     answerAfterTime : { type: Boolean },
     timeAfterFirstBuzz : { type: String },

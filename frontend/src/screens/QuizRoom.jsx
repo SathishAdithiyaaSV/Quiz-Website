@@ -25,6 +25,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   const [isPaused, setIsPaused] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
+  const [buzzNo, setBuzzNo] = useState(0);
 
   function getInitialTimeLeft() {
     const storedStartTime = localStorage.getItem('startTime');
@@ -65,6 +66,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
       setBuzzerActive(false);
       setQnActive(false);
       setIsPaused(true);
+      setBuzzNo(parsedDetails.buzzNo);
       setNotification(`Buzzed in by ${parsedDetails.teamName}`);
     };
 
@@ -101,6 +103,12 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
         if(buzzer)
           setQnActive(false);
           setNotification(`${parsedDetails.teamName} answered incorrectly!`);
+        if(parsedDetails.buzzesLimitExceeded)
+        {
+          setBuzzerActive(false);
+          setIsPaused(true);
+          setCorrectAnswer(parsedDetails.correctAnswer);
+        }
       }
     };
 
@@ -153,6 +161,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             timeLeft={timeLeft}
             setTimeLeft={setTimeLeft}
             correctAnswer={correctAnswer}
+            buzzNo={buzzNo}
           />
         );
       case 'HostQn':

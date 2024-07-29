@@ -18,7 +18,9 @@ export const handleShowPreJoinSettings = async (socket, details) => {
     if(socket.user.rooms.includes(roomObjId))
     {
         socket.join(roomId);
-        const team = await Team.findById(socket.user.teams[0]);
+        const roomTeams = await Team.find({ _id: { $in: room.teams } });
+        const userTeams = await Team.find({ _id: { $in: socket.user.teams } });
+        const team = userTeams.find(t => roomTeams.some(r => r._id.toString() === t._id.toString()));
         if(socket.user._id.toString() === room.host.toString()) 
         {
             io.to(socket.id).emit('preJoinSettings', JSON.stringify({inRoom: true, isHost:true}));

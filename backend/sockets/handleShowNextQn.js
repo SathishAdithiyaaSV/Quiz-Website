@@ -16,7 +16,11 @@ export const handleShowNextQn = async (socket, details) => {
         io.to(socket.id).emit('privateMessage', "Room does not exist");
         return;
     }
+    if(!room.rounds[round])
+        return;
     const rnd = await Round.findById(room.rounds[round]);
+    if(!rnd.questions[qnNo])
+        return;
     const qn = await Question.findById(rnd.questions[qnNo]).lean();
     const settings = await Settings.findById(room.settings);
     qn["points"] = settings.points;

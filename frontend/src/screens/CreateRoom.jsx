@@ -15,7 +15,7 @@ const CreateRoom = () => {
     points: 0,
     buzzer: false,
     answerOnBuzz: false,
-    answerAfterTime: false,
+    numberOfBuzzes: 1,
     timeAfterFirstBuzz: '',
     timeAfterSecondBuzz: '',
     timeAfterThirdBuzz: '',
@@ -233,7 +233,7 @@ const CreateRoom = () => {
           </div>
           {isTeam && (
             <div className="mb-4">
-              <label className="block mb-2" htmlFor="teamSize">Team Size</label>
+              <label className="block mb-0" htmlFor="teamSize">Team Size</label>
               <input
                 type="number"
                 id="teamSize"
