@@ -50,7 +50,7 @@ export const createRoom = async (req, res) => {
         const room = new Room(properties);
         const newRoom = await room.save();
         await User.updateOne({_id: req.user._id}, {$push : {rooms: newRoom._id}});
-        res.status(201).json({message: 'Room created successfully'});
+        res.status(201).json({roomId: newRoom._id.toString()});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

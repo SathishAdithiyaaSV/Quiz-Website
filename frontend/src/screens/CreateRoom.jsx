@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import RoundCard from '../components/RoundCard'; // Make sure to adjust the import path as needed
 import SettingsCard from '../components/SettingsCard';
+import Navbar from '../components/constants/Navbar';
+import Popup from '../components/Popup';
 //import jwtDecode from 'jwt-decode';
 const BACKEND_URL =
   import.meta.env.VITE_APP_BACKEND_URL ?? 'http://localhost:3000';
@@ -29,6 +31,8 @@ const CreateRoom = () => {
   });
   const [isTeam, setIsTeam] = useState(true);
   const [teamSize, setTeamSize] = useState('');
+  const [showPopup, setShowPopup] = useState('');
+  const [link, setLink] = useState('');
 
   const getJwt = () => {
     return localStorage.getItem('jwtToken');
@@ -134,7 +138,8 @@ const CreateRoom = () => {
     });
 
     const json = await response.json();
-    alert(json.message);
+    setShowPopup(true);
+    setLink("http://localhost:5173" + '/room/' + json.roomId);
   };
 
   const handleSettingsChange = (e) => {
@@ -154,8 +159,13 @@ const CreateRoom = () => {
   };
 
   return (
+    <div>
+      <Navbar currentPage={1}/>
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
       <div className="p-8 bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl">
+      {showPopup && (
+        <Popup link={link} onClose={() => setShowPopup(false)} />
+      )}
         <h2 className="text-2xl font-bold mb-6 text-center">Create Room</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -255,6 +265,7 @@ const CreateRoom = () => {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 };

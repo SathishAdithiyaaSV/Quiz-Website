@@ -6,6 +6,7 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import authRoutes from './routes/authRoutes.js';
 import roomRoutes from './routes/roomRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { handleSocketConnection } from './sockets/socketHandler.js';
 import socketAuthMiddleware from './middlewares/socketAuth.js';
 
@@ -37,6 +38,7 @@ mongoose.connect('mongodb://localhost:27017/mydatabase', {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
+app.use('/api/users', userRoutes);
 
 io.on('connection', handleSocketConnection);
 
