@@ -9,6 +9,7 @@ import { handleShowRules } from "./handleShowRules.js";
 import { handleShowNextQn } from "./handleShowNextQn.js";
 import { handleBuzzIn } from "./handleBuzzIn.js";
 import { handleSubmitAnswer } from "./handleSubmitAnswer.js";
+import mongoose from "mongoose";
 
 const userSocketMap = new Map();
 
@@ -59,9 +60,17 @@ export const handleSocketConnection = async (socket) => {
         await handleSubmitAnswer(socket, details);
     });
 
-    socket.on('leaveRoom', (roomId) => {
+    socket.on('leaveRoom', async (details) => {
+        const { roomId, teamName } = JSON.parse(details);
+        console.log(details);
+        const roomObjId = new mongoose.Types.ObjectId(roomId)
         socket.leave(roomId);
         console.log(`Client ${socket.id} left room ${roomId}`);
+        const team = await Team.findOne({name: teamName});
+        if(team)
+            await User.updateOne({_id:socket.user._id}, { $pull: { rooms: roomObjId, teams: team._id } });
+        else
+            await User.updateOne({_id:socket.user._id}, { $pull: { rooms: roomObjId } });
     });
 
     socket.on('disconnect', () => {

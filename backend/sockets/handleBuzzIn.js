@@ -19,7 +19,13 @@ export const handleBuzzIn = async (socket, details) => {
     const rnd = await Round.findById(room.rounds[round]);
     const qn = await Question.findById(rnd.questions[qnNo]);
     const team = await Team.findOne({ name: teamName });
-    const settings = await Settings.findById(room.settings);
+    var settings;
+    if(room.settingsLevel === "room")
+        settings = await Settings.findById(room.settings);
+    else if(room.settingsLevel === "round")
+        settings = await Settings.findById(rnd.settings);
+    else if(room.settingsLevel === "question")
+        settings = await Settings.findById(qn.settings);
     await Question.updateOne({_id: qn._id}, {$set : {buzzedIn: team._id, buzzNo: qn.buzzNo + 1, mainTime: mainTime}});
     io.in(roomId).emit('buzzedIn', JSON.stringify({teamName: team.name, buzzNo: qn.buzzNo + 1}));
     for (const member of team.members) {

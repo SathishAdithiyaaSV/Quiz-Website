@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import SettingsCard from './SettingsCard';
 
 const QuestionCard = ({
+  rounds,
+  setRounds,
   question,
   roundIndex,
   questionIndex,
@@ -11,10 +13,39 @@ const QuestionCard = ({
   expanded,
   onAnswerChange,
   settingsLevel,
-  settings,
-  handleSettingsChange
 }) => {
   const questionTypes = ['text', 'mcq']; // Define questionTypes within the component
+  const [settings, setSettings] = useState({ // Initial state for settings
+    time: '',
+    points: 0,
+    buzzer: false,
+    answerOnBuzz: false,
+    numberOfBuzzes: 1,
+    timeAfterFirstBuzz: '',
+    timeAfterSecondBuzz: '',
+    timeAfterThirdBuzz: '',
+    equalPointsOnCorrectAnswer: false,
+    firstBuzzAnsweredCorrect: 0,
+    firstBuzzAnsweredIncorrect: 0,
+    secondBuzzAnsweredCorrect: 0,
+    secondBuzzAnsweredIncorrect: 0,
+    thirdBuzzAnsweredCorrect: 0,
+    thirdBuzzAnsweredIncorrect: 0,
+  });
+
+  const handleSettingsChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prevSettings => ({
+      ...prevSettings,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  useEffect(() => {
+    var rnds = rounds;
+    rnds[roundIndex].questions[questionIndex].settings = settings;
+    setRounds(rnds);
+  },[settings]);
 
   return (
     <div className="mb-2">

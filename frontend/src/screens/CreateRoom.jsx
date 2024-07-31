@@ -9,7 +9,7 @@ const BACKEND_URL =
 
 const CreateRoom = () => {
   const [roomName, setRoomName] = useState('');
-  const [rounds, setRounds] = useState([{ name: '', questions: [{ text: '', type: 'text', answer: '', options: [] }] }]);
+  const [rounds, setRounds] = useState([{ name: '', questions: [{ text: '', type: 'text', answer: '', options: []  }], }]);
   const [activeRound, setActiveRound] = useState(null);
   const [settingsLevel, setSettingsLevel] = useState('room'); // New state for settings level
   const [settings, setSettings] = useState({ // Initial state for settings
@@ -107,10 +107,12 @@ const CreateRoom = () => {
 
   const openRoundModal = (index) => {
     setActiveRound(index);
+    console.log(rounds);
   };
 
   const closeRoundModal = () => {
     setActiveRound(null);
+    console.log(rounds);
   };
 
   const handleSubmit = async (e) => {
@@ -133,7 +135,7 @@ const CreateRoom = () => {
           isTeam: isTeam,
           teamSize: teamSize,
           settingsLevel: settingsLevel,
-          settings: settings
+          ...(settingsLevel === "room" && { settings }),
       }),
     });
 
@@ -184,6 +186,8 @@ const CreateRoom = () => {
             <RoundCard
               key={roundIndex}
               round={round}
+              rounds={rounds}
+              setRounds={setRounds}
               roundIndex={roundIndex}
               onRoundClick={openRoundModal}
               onRoundDelete={deleteRound}
@@ -195,8 +199,6 @@ const CreateRoom = () => {
               onClose={closeRoundModal}
               onAnswerChange={handleAnswerChange}
               settingsLevel={settingsLevel}
-              settings={settings}
-              handleSettingsChange={handleSettingsChange}
             />
           ))}
 

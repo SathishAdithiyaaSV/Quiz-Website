@@ -10,20 +10,32 @@ const createSettings = async (properties) => {
     return newSettings._id;
 }
 
-const createQuestion = async (properties) => {
+const createQuestion = async (properties, settingsLevel) => {
+    if(settingsLevel === "question")
+        properties.settings=await createSettings(properties.settings);
+    else
+        delete properties.settings;
     const qn = new Question(properties);
     const newQn = await qn.save();
     return newQn;
 }
 
-const createRound = async (roundProperties) => {
+const createRound = async (roundProperties, settingsLevel) => {
+    console.log(roundProperties);
     try {
         // Save each question and get their IDs
 
         for(var i = 0; i < roundProperties.questions.length; i++) {
-            const newQn = await createQuestion(roundProperties.questions[i]);
+            const newQn = await createQuestion(roundProperties.questions[i], settingsLevel);
             roundProperties.questions[i] = newQn._id;
         }
+
+        console.log(settingsLevel);
+
+        if(settingsLevel === "round")
+            roundProperties.settings=await createSettings(roundProperties.settings);
+        else
+            delete roundProperties.settings;
 
         // Create a new round with the question IDs
         const round = new Round(roundProperties);
@@ -40,13 +52,16 @@ export const createRoom = async (req, res) => {
     var properties = req.body;
     try {
         for(var i = 0; i < properties.rounds.length; i++) {
-            const newRound = await createRound(properties.rounds[i]);
+            const newRound = await createRound(properties.rounds[i], properties.settingsLevel);
             properties.rounds[i] = newRound._id;
         }
         properties["host"] = req.user._id;
+        console.log(properties.settingsLevel);
         // Create a new round with the question IDs
         if(properties.settingsLevel === "room")
             properties.settings=await createSettings(properties.settings);
+        else
+            delete properties.settings;
         const room = new Room(properties);
         const newRoom = await room.save();
         await User.updateOne({_id: req.user._id}, {$push : {rooms: newRoom._id}});

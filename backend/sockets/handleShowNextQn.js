@@ -22,7 +22,13 @@ export const handleShowNextQn = async (socket, details) => {
     if(!rnd.questions[qnNo])
         return;
     const qn = await Question.findById(rnd.questions[qnNo]).lean();
-    const settings = await Settings.findById(room.settings);
+    var settings;
+    if(room.settingsLevel === "room")
+        settings = await Settings.findById(room.settings);
+    else if(room.settingsLevel === "round")
+        settings = await Settings.findById(rnd.settings);
+    else if(room.settingsLevel === "question")
+        settings = await Settings.findById(qn.settings);
     qn["points"] = settings.points;
     qn["time"] = settings.time;
     qn["buzzer"] = settings.buzzer;

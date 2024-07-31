@@ -20,7 +20,13 @@ export const handleSubmitAnswer = async (socket, details) => {
     const rnd = await Round.findById(room.rounds[round]);
     const qn = await Question.findById(rnd.questions[qnNo]);
     const team = await Team.findOne({ name: teamName });
-    const qnSettings = await Settings.findById(room.settings);
+    var qnSettings;
+    if(room.settingsLevel === "room")
+        qnSettings = await Settings.findById(room.settings);
+    else if(room.settingsLevel === "round")
+        qnSettings = await Settings.findById(rnd.settings);
+    else if(room.settingsLevel === "question")
+        qnSettings = await Settings.findById(qn.settings);
 
     if(timeOut && (socket.user._id.toString() !== team.admin.toString()))
         return;

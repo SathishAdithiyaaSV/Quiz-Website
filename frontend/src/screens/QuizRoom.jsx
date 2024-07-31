@@ -248,6 +248,12 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
             Start Next Round
           </button>
         )}
+        <button
+          className="w-full p-4 border-b border-gray-700 hover:bg-red-500 bg-red-600 text-white"
+          onClick={() => socket.emit('leaveRoom', JSON.stringify({ roomId, teamName }))}>
+          Leave Room
+        </button>
+
       </div>
       <div className="flex-1 p-4">{renderComponent()}</div>
     </div>

@@ -4,6 +4,8 @@ import SettingsCard from './SettingsCard';
 
 const RoundCard = ({
   round,
+  rounds,
+  setRounds,
   roundIndex,
   onRoundClick,
   onRoundDelete,
@@ -15,14 +17,41 @@ const RoundCard = ({
   expanded,
   onAnswerChange,
   settingsLevel,
-  settings,
-  handleSettingsChange
 }) => {
   const questionTypes = ['text', 'mcq']; // Define questionTypes within the component
   const [activeQuestion, setActiveQuestion] = useState(null);
+  const [settings, setSettings] = useState({ // Initial state for settings
+    time: '',
+    points: 0,
+    buzzer: false,
+    answerOnBuzz: false,
+    numberOfBuzzes: 1,
+    timeAfterFirstBuzz: '',
+    timeAfterSecondBuzz: '',
+    timeAfterThirdBuzz: '',
+    equalPointsOnCorrectAnswer: false,
+    firstBuzzAnsweredCorrect: 0,
+    firstBuzzAnsweredIncorrect: 0,
+    secondBuzzAnsweredCorrect: 0,
+    secondBuzzAnsweredIncorrect: 0,
+    thirdBuzzAnsweredCorrect: 0,
+    thirdBuzzAnsweredIncorrect: 0,
+  });
   
   const handleQuestionClick = (index) => {
     setActiveQuestion(activeQuestion === index ? null : index);
+  };
+
+  const handleSettingsChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prevSettings => ({
+      ...prevSettings,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    var rnds = rounds;
+    rnds[roundIndex].settings = settings;
+    console.log(rnds);
+    setRounds(rnds);
   };
 
   return (
@@ -68,6 +97,8 @@ const RoundCard = ({
               {round.questions.map((question, questionIndex) => (
                 <QuestionCard
                   key={questionIndex}
+                  rounds={rounds}
+                  setRounds={setRounds}
                   question={question}
                   roundIndex={roundIndex}
                   questionIndex={questionIndex}
@@ -77,8 +108,6 @@ const RoundCard = ({
                   expanded={activeQuestion === questionIndex}
                   onAnswerChange={onAnswerChange}
                   settingsLevel={settingsLevel}
-                  settings={settings}
-                  handleSettingsChange={handleSettingsChange}
                 />
               ))}
             </div>
