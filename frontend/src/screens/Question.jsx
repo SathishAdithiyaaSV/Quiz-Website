@@ -6,10 +6,15 @@ import Notification from '../components/Notification';
 
 const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, buzzerActive, notification, socket, teamName, roomId, round, setMainTime, answeredCorrectly, correctAnswer, answered, handleBuzzer, qnActive, showConfetti, timeLeft, setTimeLeft, buzzNo }) => {
   const [userAnswer, setUserAnswer] = useState('');
+  const [clickedOption, setClickedOption] = useState('');
 
   useEffect(() => {
       <Notification message={notification} />
   }, [notification]);
+
+  useEffect(() => {
+    setClickedOption('');
+  }, [question]);
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
@@ -91,13 +96,13 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
               <div key={index} className="w-full md:w-1/2 px-2 mb-4">
                 <button
                   className={`w-full p-2 rounded ${
-                    (option === correctAnswer)
+                    (option === clickedOption)
                       ? answeredCorrectly
                         ? 'bg-green-500'
-                        : (answered ? 'bg-red-500': 'bg-blue-500 hover:bg-blue-600')
+                        : 'bg-red-500'
                       : 'bg-blue-500 hover:bg-blue-600'
                   }`}
-                  onClick={() => handleOptionClick(option)}
+                  onClick={() => {handleOptionClick(option); setClickedOption(option);}}
                   disabled={!qnActive}
                 >
                   {option}

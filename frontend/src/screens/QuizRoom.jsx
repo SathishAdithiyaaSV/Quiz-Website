@@ -3,6 +3,8 @@ import Question from './Question';
 import Leaderboard from './Leaderboard';
 import Rules from './Rules';
 import HostQn from './HostQn';
+import Notification from '../components/Notification';
+import { Howl } from 'howler';
 
 const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   const [activeComponent, setActiveComponent] = useState('Quiz');
@@ -26,6 +28,14 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
   const [buzzNo, setBuzzNo] = useState(0);
+
+  const sound = new Howl({
+    src: ['/home/sathish/Documents/Quiz-Website/frontend/src/assets/buzzer-sound.mp3']
+  });
+
+  const playSound = () => {
+    sound.play();
+  };
 
   function getInitialTimeLeft() {
     const storedStartTime = localStorage.getItem('startTime');
@@ -102,13 +112,15 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
         setBuzzerActive(true);
         if(buzzer)
           setQnActive(false);
-          setNotification(`${parsedDetails.teamName} answered incorrectly!`);
         if(parsedDetails.buzzesLimitExceeded)
         {
           setBuzzerActive(false);
           setIsPaused(true);
           setCorrectAnswer(parsedDetails.correctAnswer);
+          setNotification(`${parsedDetails.teamName}'s timeout exceeded`);
         }
+        else
+          setNotification(`${parsedDetails.teamName} answered incorrectly!`);
       }
     };
 
@@ -207,6 +219,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
     if(timeLeft !== 0)
       socket.emit('buzzIn', JSON.stringify({ roomId, teamName, qnNo, round, mainTime: timeLeft }));
     console.log(timeLeft);
+    playSound();
   };
 
   return (
@@ -253,10 +266,11 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
           onClick={() => socket.emit('leaveRoom', JSON.stringify({ roomId, teamName }))}>
           Leave Room
         </button>
-
+        {notification && (
+        <Notification message={notification} />)}
       </div>
       <div className="flex-1 p-4">{renderComponent()}</div>
-    </div>
+    </div> 
   );
 };
 

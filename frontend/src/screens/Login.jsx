@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 const BACKEND_URL =
   import.meta.env.VITE_APP_BACKEND_URL ?? 'http://localhost:3000';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordShown, setPasswordShown] = useState(false);
@@ -31,7 +33,7 @@ const Login = () => {
       if(json.token)
       {
         localStorage.setItem("jwtToken", json.token);
-        alert("Login successful");
+        navigate('/');
       }
       else if(json.error)
         alert("Error: " + json.error);
