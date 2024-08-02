@@ -6,7 +6,7 @@ import HostQn from './HostQn';
 import Notification from '../components/Notification';
 import { Howl } from 'howler';
 
-const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
+const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
   const [activeComponent, setActiveComponent] = useState('Quiz');
   const [type, setType] = useState('');
   const [question, setQuestion] = useState('');
@@ -263,7 +263,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost }) => {
         )}
         <button
           className="w-full p-4 border-b border-gray-700 hover:bg-red-500 bg-red-600 text-white"
-          onClick={() => socket.emit('leaveRoom', JSON.stringify({ roomId, teamName }))}>
+          onClick={() => {socket.emit('leaveRoom', JSON.stringify({ roomId, teamName })); setInGame(false)}}>
           Leave Room
         </button>
         {notification && (

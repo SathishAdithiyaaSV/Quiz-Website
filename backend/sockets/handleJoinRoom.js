@@ -49,6 +49,7 @@ export const handleJoinRoom = async (socket, details) => {
         let memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
         console.log(memberSocket.id);
         memberSocket.join(roomId);
+        memberSocket.emit('joined', roomId);
         await User.updateOne({_id: memberSocket.user._id}, {$push : {rooms: roomObjId}});
         await User.updateOne({_id: memberSocket.user._id}, {$push : {teams: newTeam._id}});
     }

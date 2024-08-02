@@ -67,11 +67,20 @@ const GamePage = () => {
         };
     }, [roomId]); // Re-run effect only if roomId changes
 
+    useEffect(() => {
+        socket.on('joined', (roomId) => {setInGame(true);});
+
+        return () => {
+            socket.off('joined', (roomId) => setInGame(true));
+        };
+    }, []); 
+
+
     const handleClick = () => {
         if (socket) {
             socket.emit('joinRoom', JSON.stringify({ roomId, teamName, users }));
             socket.on('privateMessage', (message) => alert(message));
- //           setInGame(true); // Switch to the GameRoom component
+            setInGame(true);
         }
     };
 
@@ -84,6 +93,8 @@ const GamePage = () => {
                         roomId={roomId}
                         teamName={teamName}
                         isHost={isHost}
+                        inGame={inGame}
+                        setInGame={setInGame}
                     /> 
                 ) : (
                     <RoomPreJoin
