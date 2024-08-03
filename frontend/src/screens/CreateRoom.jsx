@@ -7,7 +7,7 @@ import Popup from '../components/Popup';
 const BACKEND_URL =
   import.meta.env.VITE_APP_BACKEND_URL ?? 'http://localhost:3000';
 
-const CreateRoom = () => {
+const CreateRoom = ({loggedIn}) => {
   const [roomName, setRoomName] = useState('');
   const [rounds, setRounds] = useState([{ name: '', questions: [{ text: '', type: 'text', answer: '', options: []  }], }]);
   const [activeRound, setActiveRound] = useState(null);
@@ -162,7 +162,7 @@ const CreateRoom = () => {
 
   return (
     <div>
-      <Navbar currentPage={1}/>
+      <Navbar currentPage={1} loggedIn={loggedIn}/>
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
       <div className="p-8 bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl">
       {showPopup && (

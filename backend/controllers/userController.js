@@ -10,3 +10,13 @@ export const home = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
+export const profile = async (req, res) => {
+    try {
+        const username = req.user.username;
+        const email = req.user.email;
+        res.status(200).json({ username, email });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+};

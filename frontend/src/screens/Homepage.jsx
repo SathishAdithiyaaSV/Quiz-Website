@@ -5,9 +5,8 @@ import Navbar from '../components/constants/Navbar';
 const BACKEND_URL =
   import.meta.env.VITE_APP_BACKEND_URL ?? 'http://localhost:3000';
 
-const HomePage = () => {
+const HomePage = ({loggedIn, setLoggedIn}) => {
   const [rooms, setRooms] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     async function getRooms() {
