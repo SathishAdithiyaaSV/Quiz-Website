@@ -102,6 +102,22 @@ Quizzy is an interactive quiz platform designed for fun and engaging quiz sessio
 
 * [![React][React.js]][React-url]
 
+* [![Tailwind][Tailwind]][Tailwind-url]
+
+* [![Nodejs][Nodejs]][Nodejs-url]
+
+* [![Express][Express.js]][Express-url]
+
+* [![Socket.io][Socket.io]][Socket-url]
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+### Challenges encountered 
+
+- **Create room page**: Allowing host to create rooms for with different settings for each round.
+- **Buzzer system**: Pausing of the timer for the other teams when the buzzer is pressed and resuming when answered incorrectly.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -179,10 +195,6 @@ Quizzy can be used to host engaging quiz sessions for various events, such as:
 4. **Leaderboard**
    - After each question, the leaderboard updates to show team rankings.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-Additional screenshots, code examples, and demos will be added here to provide more insights into how Quizzy can be used effectively.
-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -238,6 +250,16 @@ Don't forget to give the project a star! Thanks again!
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[Tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[Tailwind-url]: https://tailwindcss.com/
+[Nodejs]: https://img.shields.io/badge/Node.js-5FA04E?logo=nodedotjs&logoColor=fff&style=for-the-badge
+[Nodejs-url]: https://nodejs.org/en
+[Express.js]: https://img.shields.io/badge/Express.js-404D59?style=for-the-badge
+[Express-url]: https://expressjs.com/
+[Socket.io]: https://img.shields.io/badge/Socket.io-010101?logo=socketdotio&logoColor=fff&style=for-the-badge
+[Socket-url]: https://socket.io/
+[MongoDB]: https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white
+[MongoDB-url]: https://www.mongodb.com/
 [Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
 [Vue-url]: https://vuejs.org/
 [Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
