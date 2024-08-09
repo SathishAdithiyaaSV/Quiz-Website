@@ -57,21 +57,24 @@ const Login = () => {
             />
           </div>
           <div className="mb-4 relative">
-            <label className="block mb-2" htmlFor="password">Password</label>
-            <input
-              type={passwordShown ? "text" : "password"}
-              id="password"
-              className="w-full p-2 rounded bg-gray-700 border border-gray-600"
-              placeholder="Enter your password"
-              onChange = { e => setPassword(e.target.value) }
-            />
-            <div
-              className="absolute inset-y-0 right-0 p-0 b-0 flex items-center pr-3 cursor-pointer"
-              onClick={togglePasswordVisibility}
-            >
-              {passwordShown ? <FaEye /> : <FaEyeSlash />}
+              <label className="block mb-2" htmlFor="password">Password</label>
+              <div className="relative">
+                <input
+                  type={passwordShown ? "text" : "password"}
+                  id="password"
+                  className="w-full p-2 rounded bg-gray-700 border border-gray-600 pr-10"  // Added padding-right for the icon
+                  placeholder="Enter your password"
+                  onChange={e => setPassword(e.target.value)}
+                />
+                <div
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {passwordShown ? <FaEye /> : <FaEyeSlash />}
+                </div>
+              </div>
             </div>
-          </div>
+
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

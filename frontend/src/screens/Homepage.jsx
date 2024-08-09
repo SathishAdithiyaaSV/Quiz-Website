@@ -65,14 +65,18 @@ const HomePage = ({loggedIn, setLoggedIn}) => {
           </button>
         </div>
         <h1 className="text-2xl font-bold mb-4">Your rooms</h1>
-        {!loggedIn && (<p>Please <Link to='/login'>Login</Link> to see your rooms</p>)}
+        {!loggedIn && (<p>Please <span className='text-blue-500'><Link to='/login'>Login</Link></span> to see your rooms</p>)}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {rooms.map(room => (
             <Link to={'/room/' + room._id.toString()}>
-            <div key={room._id} className="bg-gray-800 p-4 rounded shadow-md">
+          <div
+            key={room._id}
+            className="bg-gray-800 p-4 rounded-2xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+          >
               <h2 className="text-xl font-bold">{room.name}</h2>
               <p>Room Id : {room._id.toString()}</p>
-            </div>
+          </div>
+
             </Link>
           ))}
         </div>  

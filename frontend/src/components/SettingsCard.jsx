@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 const SettingsCard = ({ settings, onSettingsChange }) => {
   const [expanded, setExpanded] = useState(false);
@@ -21,14 +23,20 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
     <>
       {!expanded && (
         <div className="flex items-center mb-2 mt-0">
-          <div className="p-4 bg-gray-600 rounded-lg flex-1">
-            <h4 className="text-md font-bold" onClick={handleClick}>Settings</h4>
+          <div className="p-4 bg-gray-600 rounded-lg flex-1 flex justify-between items-center">
+            <h4 className="text-md font-bold cursor-pointer">Settings</h4>
+            <button onClick={handleClick}><FontAwesomeIcon icon={faChevronDown} className="w-5 h-5"/></button>
           </div>
         </div>
       )}
       {expanded && (
         <div className="mb-2 mt-0 p-4 bg-gray-700 rounded-lg">
-          <h4 className="text-lg font-bold mb-2" onClick={handleClick}>Settings</h4>
+        <div className="flex justify-between items-center pb-4">
+          <h4 className="text-lg font-bold mb-2">Settings</h4>
+          <button onClick={handleClick}>
+            <FontAwesomeIcon icon={faChevronUp} className="w-5 h-5" />
+          </button>
+        </div>
           <div className="flex items-center mb-2">
             <label className="w-1/3" htmlFor="time">Time:</label>
             <input

@@ -60,6 +60,7 @@
       <ul>
         <li><a href="#key-features">Key Features</a></li>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#challenges-encountered">Challenges Encountered</a></li>
       </ul>
     </li>
     <li>
@@ -114,7 +115,7 @@ Quizzy is an interactive quiz platform designed for fun and engaging quiz sessio
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-### Challenges encountered 
+### Challenges Encountered 
 
 - **Create room page**: Allowing host to create rooms for with different settings for each round.
 - **Buzzer system**: Pausing of the timer for the other teams when the buzzer is pressed and resuming when answered incorrectly.

@@ -163,7 +163,7 @@ const CreateRoom = ({loggedIn}) => {
   return (
     <div>
       <Navbar currentPage={1} loggedIn={loggedIn}/>
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white px-4 mt-4">
       <div className="p-8 bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl">
       {showPopup && (
         <Popup link={link} onClose={() => setShowPopup(false)} />
