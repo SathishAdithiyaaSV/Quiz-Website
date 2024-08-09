@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faStar, faQuestionCircle, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faStar, faQuestionCircle, faBell, faForward, faPause } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../components/Notification';
 
-const HostQn = ({ question, questionType, points, time, isPaused, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft, notification }) => {
+const HostQn = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft, notification }) => {
 
   useEffect(() => {
     <Notification message={notification} />
-}, [notification]);
+  }, [notification]);
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
@@ -15,9 +15,9 @@ const HostQn = ({ question, questionType, points, time, isPaused, buzzer, option
     }
 
     const interval = setInterval(() => {
-      if(!isPaused){
-      const elapsedTime = Math.floor((Date.now() - parseInt(localStorage.getItem('startTime'))) / 1000);
-      setTimeLeft(Math.max(time - elapsedTime, 0));
+      if (!isPaused) {
+        const elapsedTime = Math.floor((Date.now() - parseInt(localStorage.getItem('startTime'))) / 1000);
+        setTimeLeft(Math.max(time - elapsedTime, 0));
       }
     }, 1000);
 
@@ -39,19 +39,24 @@ const HostQn = ({ question, questionType, points, time, isPaused, buzzer, option
     };
   }, [time, isPaused]);
 
- 
   return (
-    <div>
     <div className="relative bg-gray-800 p-8 rounded-lg">
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold">Quiz</h1>
+      <div className="mb-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Question {qnNo}</h1>
+        <div className="flex space-x-4">
+          <button onClick={handleShowNextQn} className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full">
+            <FontAwesomeIcon icon={faForward} className="text-white" />
+          </button>
+        </div>
       </div>
+
       <div className="mb-4">
         <p className="text-xl flex items-center">
-          <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" /> 
+          <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" />
           {question}
         </p>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <FontAwesomeIcon icon={faStar} className="mr-2 text-yellow-500" />
@@ -62,17 +67,18 @@ const HostQn = ({ question, questionType, points, time, isPaused, buzzer, option
           <p>{timeLeft}s</p>
         </div>
       </div>
+
       {questionType === 'mcq' && (
         <div className="mb-4">
           <p className="flex items-center">
-            <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" /> 
+            <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" />
             Question Type: Multiple Choice
           </p>
           <div className="flex flex-wrap -mx-2">
             {options.map((option, index) => (
               <div key={index} className="w-full md:w-1/2 px-2 mb-4">
                 <button
-                  className={`w-full p-2 rounded `}
+                  className={`w-full p-2 rounded bg-blue-500`}
                   disabled={true}
                 >
                   {option}
@@ -82,10 +88,11 @@ const HostQn = ({ question, questionType, points, time, isPaused, buzzer, option
           </div>
         </div>
       )}
+
       {questionType === 'text' && (
         <div className="mb-4">
           <p className="flex items-center">
-            <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" /> 
+            <FontAwesomeIcon icon={faQuestionCircle} className="mr-2" />
             Question Type: Text
           </p>
           <input
@@ -102,6 +109,7 @@ const HostQn = ({ question, questionType, points, time, isPaused, buzzer, option
           </button>
         </div>
       )}
+
       {buzzer && (
         <div className="mt-4">
           <button
@@ -111,31 +119,6 @@ const HostQn = ({ question, questionType, points, time, isPaused, buzzer, option
           </button>
         </div>
       )}
-    </div>
-    <div className="relative bg-gray-800 p-8 rounded-lg">
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold">Controls</h1>
-      </div>
-        <div className="mb-4">
-          <div className="flex flex-wrap -mx-2">
-              <div className="w-full md:w-1/2 px-2 mb-4">
-                <button
-                  className="w-full p-2 rounded "
-                  onClick = {handleShowNextQn}
-                >
-                  Show next question
-                </button>
-                <button
-                  className="w-full p-2 rounded "
-                  disabled={true}
-                >
-                  Pause Quiz
-                </button>
-              </div>
-
-          </div>
-        </div>
-    </div>
     </div>
   );
 };

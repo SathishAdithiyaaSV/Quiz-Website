@@ -85,7 +85,7 @@ const GamePage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <div>
             {isConnected ? (
                 inGame ? (
                     <QuizRoom
@@ -110,7 +110,7 @@ const GamePage = () => {
                     />
                 )
             ) : (
-                <p>Connecting...</p>
+                <p className="items-center justify-center">Connecting...</p>
             )}
         </div>
     );

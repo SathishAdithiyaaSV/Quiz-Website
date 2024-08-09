@@ -5,7 +5,7 @@ import Rules from './Rules';
 import HostQn from './HostQn';
 import Notification from '../components/Notification';
 import { Howl } from 'howler';
-
+import { FaQuestionCircle, FaTrophy, FaInfoCircle, FaPlay, FaDoorOpen } from 'react-icons/fa'; // Importing icons from Font Awesome
 const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
   const [activeComponent, setActiveComponent] = useState('Quiz');
   const [type, setType] = useState('');
@@ -181,6 +181,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
           <HostQn
           socket={socket}
             question={question}
+            qnNo={qnNo}
             questionType={type}
             points={points}
             time={time}
@@ -223,54 +224,61 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
   };
 
   return (
-    <div className="min-h-screen min-w-screen bg-gray-900 text-white flex flex-col lg:flex-row">
-      <div className="bg-gray-800 sg:w-full lg:w-1/8 flex lg:flex-col">
-        {!isHost && (
-          <button
-            className="w-full p-4 border-b border-gray-700 hover:bg-gray-700"
-            onClick={() => setActiveComponent('Question')}
-          >
-            Question
-          </button>
-        )}
-        {isHost && (
-          <button
-            className="w-full p-4 border-b border-gray-700 hover:bg-gray-700"
-            onClick={() => setActiveComponent('HostQn')}
-          >
-            Question
-          </button>
-        )}
-        <button
-          className="w-full p-4 border-b border-gray-700 hover:bg-gray-700"
-          onClick={() => setActiveComponent('Leaderboard')}
-        >
-          Leaderboard
-        </button>
-        <button
-          className="w-full p-4 border-b border-gray-700 hover:bg-gray-700"
-          onClick={() => setActiveComponent('Rules')}
-        >
-          Rules
-        </button>
-        {isHost && (
-          <button
-            className="w-full p-4 border-b border-gray-700 hover:bg-gray-700"
-            onClick={handleStartNextRound}
-          >
-            Start Next Round
-          </button>
-        )}
-        <button
-          className="w-full p-4 border-b border-gray-700 hover:bg-red-500 bg-red-600 text-white"
-          onClick={() => {socket.emit('leaveRoom', JSON.stringify({ roomId, teamName })); setInGame(false)}}>
-          Leave Room
-        </button>
-        {notification && (
-        <Notification message={notification} />)}
-      </div>
-      <div className="flex-1 p-4">{renderComponent()}</div>
-    </div> 
+    
+<div className="min-h-screen min-w-screen bg-gray-900 text-white flex flex-col lg:flex-row">
+  <div className="bg-gray-800 sg:w-full lg:w-1/8 flex lg:flex-col">
+    {!isHost && (
+      <button
+        className="w-full p-4 border-b border-gray-700 hover:bg-gray-700 flex justify-center"
+        onClick={() => setActiveComponent('Question')}
+        title="Question"
+      >
+        <FaQuestionCircle size={24} className="text-blue-400" />
+      </button>
+    )}
+    {isHost && (
+      <button
+        className="w-full p-4 border-b border-gray-700 hover:bg-gray-700 flex justify-center"
+        onClick={() => setActiveComponent('HostQn')}
+        title="Question"
+      >
+        <FaQuestionCircle size={24} className="text-blue-400" />
+      </button>
+    )}
+    <button
+      className="w-full p-4 border-b border-gray-700 hover:bg-gray-700 flex justify-center"
+      onClick={() => setActiveComponent('Leaderboard')}
+      title="Leaderboard"
+    >
+      <FaTrophy size={24} className="text-yellow-400" />
+    </button>
+    <button
+      className="w-full p-4 border-b border-gray-700 hover:bg-gray-700 flex justify-center"
+      onClick={() => setActiveComponent('Rules')}
+      title="Rules"
+    >
+      <FaInfoCircle size={24} className="text-green-400" />
+    </button>
+    {isHost && (
+      <button
+        className="w-full p-4 border-b border-gray-700 hover:bg-gray-700 flex justify-center"
+        onClick={handleStartNextRound}
+        title="Start Next Round"
+      >
+        <FaPlay size={24} className="text-purple-400" />
+      </button>
+    )}
+    <button
+      className="w-full p-4 border-b border-gray-700 hover:bg-red-500 bg-red-600 text-white flex justify-center mt-auto"
+      onClick={() => {socket.emit('leaveRoom', JSON.stringify({ roomId, teamName })); setInGame(false)}}
+      title="Leave Room"
+    >
+      <FaDoorOpen size={24} className="text-white" />
+    </button>
+    {notification && <Notification message={notification} />}
+  </div>
+  <div className="flex-1 p-4">{renderComponent()}</div>
+</div>
   );
 };
 

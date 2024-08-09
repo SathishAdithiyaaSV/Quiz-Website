@@ -11,7 +11,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   return (
     <Router>
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="min-h-screen flex bg-gray-900">
         <div className="w-full">
           <Routes>
             <Route path="/" element={<HomePage loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />

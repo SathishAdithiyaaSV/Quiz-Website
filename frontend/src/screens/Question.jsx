@@ -67,7 +67,7 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
     <div className="relative bg-gray-800 p-8 rounded-lg">
       {showConfetti && <Confetti />}
       <div className="mb-4">
-        <h1 className="text-2xl font-bold">Quiz</h1>
+        <h1 className="text-2xl font-bold">Question {qnNo}</h1>
       </div>
       <div className="mb-4">
         <p className="text-xl flex items-center">
