@@ -29,9 +29,6 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/SathishAdithiyaaSV/Quiz-Website">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
 
 <h3 align="center">Quizzy</h3>
 
@@ -81,7 +78,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 Quizzy is an interactive quiz platform designed for fun and engaging quiz sessions with friends, family, or colleagues. The website allows users to create and join quiz rooms, forming teams to compete against each other in real-time.
 

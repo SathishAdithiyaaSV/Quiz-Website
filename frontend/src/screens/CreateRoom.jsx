@@ -219,7 +219,6 @@ const CreateRoom = ({loggedIn}) => {
             >
               <option value="room">Room</option>
               <option value="round">Round</option>
-              <option value="question">Question</option>
             </select>
           </div>
           <div className="mb-4">

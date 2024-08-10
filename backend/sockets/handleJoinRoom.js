@@ -11,7 +11,6 @@ export const handleJoinRoom = async (socket, details) => {
     var username = "";
     var members = [];
     var admin;
-    console.log(users);
     for(username of users)
     {
         const user = await User.findOne({ username });
@@ -47,7 +46,6 @@ export const handleJoinRoom = async (socket, details) => {
     for (member of members)
     {
         let memberSocket = io.sockets.sockets.get(userSocketMap.get(member._id.toString()));
-        console.log(memberSocket.id);
         memberSocket.join(roomId);
         memberSocket.emit('joined', roomId);
         await User.updateOne({_id: memberSocket.user._id}, {$push : {rooms: roomObjId}});

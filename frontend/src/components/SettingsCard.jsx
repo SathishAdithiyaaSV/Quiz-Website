@@ -114,7 +114,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
                 />
               </div>
               <div className="flex items-center mb-2">
-                <label className="w-1/3" htmlFor="firstBuzzAnsweredCorrect">First Buzz Answered Correct:</label>
+                <label className="w-1/3" htmlFor="firstBuzzAnsweredCorrect">First Buzz Answered Correct: +</label>
                 <input
                   type="number"
                   id="firstBuzzAnsweredCorrect"
@@ -126,7 +126,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
                 />
               </div>
               <div className="flex items-center mb-2">
-                <label className="w-1/3" htmlFor="firstBuzzAnsweredIncorrect">First Buzz Answered Incorrect:</label>
+                <label className="w-1/3" htmlFor="firstBuzzAnsweredIncorrect">First Buzz Answered Incorrect: -</label>
                 <input
                   type="number"
                   id="firstBuzzAnsweredIncorrect"
@@ -154,7 +154,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
                 />
               </div>
               <div className="flex items-center mb-2">
-                <label className="w-1/3" htmlFor="secondBuzzAnsweredCorrect">Second Buzz Answered Correct:</label>
+                <label className="w-1/3" htmlFor="secondBuzzAnsweredCorrect">Second Buzz Answered Correct: +</label>
                 <input
                   type="number"
                   id="secondBuzzAnsweredCorrect"
@@ -166,7 +166,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
                 />
               </div>
               <div className="flex items-center mb-2">
-                <label className="w-1/3" htmlFor="secondBuzzAnsweredIncorrect">Second Buzz Answered Incorrect:</label>
+                <label className="w-1/3" htmlFor="secondBuzzAnsweredIncorrect">Second Buzz Answered Incorrect: -</label>
                 <input
                   type="number"
                   id="secondBuzzAnsweredIncorrect"
@@ -194,7 +194,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
                 />
               </div>
               <div className="flex items-center mb-2">
-                <label className="w-1/3" htmlFor="thirdBuzzAnsweredCorrect">Third Buzz Answered Correct:</label>
+                <label className="w-1/3" htmlFor="thirdBuzzAnsweredCorrect">Third Buzz Answered Correct: +</label>
                 <input
                   type="number"
                   id="thirdBuzzAnsweredCorrect"
@@ -206,7 +206,7 @@ const SettingsCard = ({ settings, onSettingsChange }) => {
                 />
               </div>
               <div className="flex items-center mb-2">
-                <label className="w-1/3" htmlFor="thirdBuzzAnsweredIncorrect">Third Buzz Answered Incorrect:</label>
+                <label className="w-1/3" htmlFor="thirdBuzzAnsweredIncorrect">Third Buzz Answered Incorrect: -</label>
                 <input
                   type="number"
                   id="thirdBuzzAnsweredIncorrect"
