@@ -29,20 +29,10 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-
 <h3 align="center">Quizzy</h3>
 
   <p align="center">
     Quizzy is a real-time, multiplayer quiz platform. Users can create and join quiz rooms, compete in teams, and answer questions against the clock.
-    <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
-    ·
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    ·
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
