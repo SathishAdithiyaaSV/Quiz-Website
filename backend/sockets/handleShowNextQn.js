@@ -17,10 +17,14 @@ export const handleShowNextQn = async (socket, details) => {
         return;
     }
     if(!room.rounds[round])
+    {   socket.emit('roundsFinished');
         return;
+    }
     const rnd = await Round.findById(room.rounds[round]);
     if(!rnd.questions[qnNo])
+    {   socket.emit('questionsFinished');
         return;
+    }
     const qn = await Question.findById(rnd.questions[qnNo]).lean();
     var settings;
     if(room.settingsLevel === "room")

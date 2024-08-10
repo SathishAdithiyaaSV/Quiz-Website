@@ -28,6 +28,8 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
   const [buzzNo, setBuzzNo] = useState(0);
+  const [roundsFinished, setRoundsFinished] = useState(false);
+  const [questionsFinished, setQuestionsFinished] = useState(false);
 
   const sound = new Howl({
     src: ['/home/sathish/Documents/Quiz-Website/frontend/src/assets/buzzer-sound.mp3']
@@ -50,6 +52,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
     const handleQuestion = (qn) => {
       localStorage.setItem('startTime', Date.now().toString());
       const parsedQn = JSON.parse(qn);
+      setQuestionsFinished(false);
       setCorrectAnswer('');
       setAnswered(false);
       setAnsweredCorrectly(false);
@@ -102,7 +105,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
         setCorrectAnswer(parsedDetails.correctAnswer);
         setAnsweredCorrectly(true);
         setIsPaused(true);
-        setNotification(`${parsedDetails.teamName} answered correctly!`);
+        setNotification(`${parsedDetails.team} answered correctly!`);
       } else {
         if (parsedDetails.team === teamName) setAnswered(true);
         setIsPaused(false);
@@ -117,10 +120,10 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
           setBuzzerActive(false);
           setIsPaused(true);
           setCorrectAnswer(parsedDetails.correctAnswer);
-          setNotification(`${parsedDetails.teamName}'s timeout exceeded`);
+          setNotification(`${parsedDetails.team}'s timeout exceeded`);
         }
         else
-          setNotification(`${parsedDetails.teamName} answered incorrectly!`);
+          setNotification(`${parsedDetails.team} answered incorrectly!`);
       }
     };
 
@@ -132,6 +135,8 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
       const parsedData = JSON.parse(data);
       setLeaderboard(parsedData);
     });
+    socket.on('questionsFinished', () => setQuestionsFinished(true));
+    socket.on('roundsFinished', () => setRoundsFinished(true));
 
     return () => {
       socket.off('question', handleQuestion);
@@ -179,7 +184,7 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
       case 'HostQn':
         return (
           <HostQn
-          socket={socket}
+            socket={socket}
             question={question}
             qnNo={qnNo}
             questionType={type}
@@ -194,6 +199,8 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
             roomId={roomId}
             timeLeft={timeLeft}
             setTimeLeft={setTimeLeft}
+            questionsFinished={questionsFinished}
+            roundsFinished={roundsFinished} 
           />
         );
       case 'Leaderboard':
@@ -261,12 +268,19 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
     </button>
     {isHost && (
       <button
-        className="w-full p-4 border-b border-gray-700 hover:bg-gray-700 flex justify-center"
+        className={`w-full p-4 border-b border-gray-700 flex justify-center ${
+          roundsFinished
+            ? "bg-gray-500 cursor-not-allowed"
+            : "hover:bg-gray-700"
+        }`}
         onClick={handleStartNextRound}
         title="Start Next Round"
+        disabled={roundsFinished}
       >
-        <FaPlay size={24} className="text-purple-400" />
-      </button>
+        <FaPlay size={24} className={`${
+          roundsFinished ? "text-gray-300" : "text-purple-400"
+        }`} />
+    </button>
     )}
     <button
       className="w-full p-4 border-b border-gray-700 hover:bg-red-500 bg-red-600 text-white flex justify-center mt-auto"

@@ -16,7 +16,7 @@ const Notification = ({ message }) => {
 
   return (
     <div
-      className={`fixed top-0 left-1/2 transform -translate-x-1/2 bg-black text-white p-4 rounded-lg transition-transform duration-500 ${
+      className={`fixed top-0 left-1/2 transform -translate-x-1/2 bg-black text-white p-4 rounded-lg transition-transform duration-500 z-50 ${
         visible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >

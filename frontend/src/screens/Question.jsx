@@ -14,6 +14,7 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
 
   useEffect(() => {
     setClickedOption('');
+    setUserAnswer('');
   }, [question]);
 
   useEffect(() => {
@@ -61,13 +62,14 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
   const handleTextSubmit = () => {
     if(timeLeft !== 0)
       socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, ansSubmitted: userAnswer, timeOut: false, buzzNo}));
+    setUserAnswer('');
   };
 
   return (
     <div className="relative bg-gray-800 p-8 rounded-lg">
       {showConfetti && <Confetti />}
       <div className="mb-4">
-        <h1 className="text-2xl font-bold">Question {qnNo}</h1>
+        <h1 className="text-2xl font-bold">Question {qnNo+1}</h1>
       </div>
       <div className="mb-4">
         <p className="text-xl flex items-center">
@@ -127,7 +129,7 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
             disabled={!qnActive}
           />
           <button
-            className="w-full p-2 mt-4 bg-blue-500 hover:bg-blue-600 rounded"
+            className={`w-full p-2 mt-4 ${qnActive ? "bg-blue-500 hover:bg-blue-600 rounded" : "bg-blue-200 text-blue-500 cursor-not-allowed"}`}
             onClick={handleTextSubmit}
             disabled={!qnActive}
           >
@@ -139,7 +141,7 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
         <div className="mt-4">
           <button
             onClick={ () => {console.log(timeLeft); handleBuzzer()}}
-            className="w-full p-4 bg-red-600 hover:bg-red-700 rounded flex items-center justify-center"
+            className={`w-full p-4 ${buzzerActive ? "bg-red-600 hover:bg-red-700" : "bg-red-300 text-red-600 cursor-not-allowed"} rounded flex items-center justify-center`}
             disabled={!buzzerActive}
           >
             <FontAwesomeIcon icon={faBell} className="mr-2" /> Buzzer

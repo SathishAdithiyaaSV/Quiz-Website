@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faStar, faQuestionCircle, faBell, faForward, faPause } from '@fortawesome/free-solid-svg-icons';
 import Notification from '../components/Notification';
 
-const HostQn = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft, notification }) => {
+const HostQn = ({ question, qnNo, questionType, points, time, isPaused, buzzer, options, handleShowNextQn, timeLeft, setTimeLeft, notification, questionsFinished, roundsFinished }) => {
 
   useEffect(() => {
     <Notification message={notification} />
@@ -42,10 +42,18 @@ const HostQn = ({ question, qnNo, questionType, points, time, isPaused, buzzer, 
   return (
     <div className="relative bg-gray-800 p-8 rounded-lg">
       <div className="mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Question {qnNo}</h1>
+        <h1 className="text-2xl font-bold">Question {qnNo+1}</h1>
         <div className="flex space-x-4">
-          <button onClick={handleShowNextQn} className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full">
-            <FontAwesomeIcon icon={faForward} className="text-white" />
+          <button
+            onClick={handleShowNextQn}
+            className={`p-2 rounded-full ${
+              questionsFinished
+                ? "bg-blue-300 text-blue-600 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            }`}
+            disabled={questionsFinished}
+          >
+            <FontAwesomeIcon icon={faForward} />
           </button>
         </div>
       </div>
@@ -102,7 +110,7 @@ const HostQn = ({ question, qnNo, questionType, points, time, isPaused, buzzer, 
             disabled={true}
           />
           <button
-            className="w-full p-2 mt-4 bg-blue-500 hover:bg-blue-600 rounded"
+            className="w-full p-2 mt-4 bg-blue-500 cursor-not-allowed rounded"
             disabled={true}
           >
             Submit
@@ -113,7 +121,7 @@ const HostQn = ({ question, qnNo, questionType, points, time, isPaused, buzzer, 
       {buzzer && (
         <div className="mt-4">
           <button
-            className="w-full p-4 bg-red-600 hover:bg-red-700 rounded flex items-center justify-center"
+            className="w-full p-4 bg-red-600 cursor-not-allowed rounded flex items-center justify-center"
           >
             <FontAwesomeIcon icon={faBell} className="mr-2" /> Buzzer
           </button>
