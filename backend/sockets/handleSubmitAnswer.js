@@ -9,7 +9,8 @@ import { io } from "../app.js";
 import mongoose from "mongoose";
 
 export const handleSubmitAnswer = async (socket, details) => {
-    const { roomId, round, qnNo, teamName, ansSubmitted, timeOut, buzzNo } = JSON.parse(details);
+    const { roomId, round, qnNo, teamName, ansSubmitted, timeOut, mainTimeOut } = JSON.parse(details);
+
     const roomObjId = new mongoose.Types.ObjectId(roomId);
     const room = await Room.findById(roomObjId);
     if (!room) {
@@ -28,8 +29,12 @@ export const handleSubmitAnswer = async (socket, details) => {
     else if(room.settingsLevel === "question")
         qnSettings = await Settings.findById(qn.settings);
 
-    if(timeOut && (socket.user._id.toString() !== team.admin.toString()))
+    if(mainTimeOut)
+    {
+        io.in(roomId).emit('answered', JSON.stringify({correctAnswer: qn.answer, mainTimeOut}));
         return;
+    }
+
     var data = {};
     var pts;
     if (ansSubmitted === qn.answer) {
@@ -61,10 +66,10 @@ export const handleSubmitAnswer = async (socket, details) => {
             pts= -qnSettings.secondBuzzAnsweredIncorrect;
         else if (qn.buzzNo === 3)
             pts= -qnSettings.thirdBuzzAnsweredIncorrect;
-        if(qnSettings.numberOfBuzzes > buzzNo)
-            data = {team: teamName, answeredCorrectly: false, mainTime: qn.mainTime};
+        if(qnSettings.numberOfBuzzes > qn.buzzNo)
+            data = {team: teamName, answeredCorrectly: false, mainTime: qn.mainTime, timeOut};
         else
-            data = {team: teamName, answeredCorrectly: false, correctAnswer: qn.answer, mainTime: qn.mainTime, buzzesLimitExceeded: true};
+            data = {team: teamName, answeredCorrectly: false, correctAnswer: qn.answer, mainTime: qn.mainTime, buzzesLimitExceeded: true, timeOut};
     }
     console.log(team);
     await Team.updateOne({_id: team._id}, {$inc: {points: pts}});

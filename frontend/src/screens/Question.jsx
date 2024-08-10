@@ -51,6 +51,10 @@ const Question = ({ question, qnNo, questionType, points, time, isPaused, buzzer
     if(qnActive && timeLeft === 0) {
       socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, timeOut: true}));
     }
+
+/*    else if(!qnActive && timeLeft === 0) {
+      socket.emit('submitAnswer', JSON.stringify({roomId, teamName, qnNo, round, mainTimeOut: true}));
+    }*/
   }, [qnActive, timeLeft]);
 
   const handleOptionClick = (option) => {

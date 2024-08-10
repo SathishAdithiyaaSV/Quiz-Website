@@ -97,7 +97,13 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
 
     const handleAnswered = (details) => {
       const parsedDetails = JSON.parse(details);
-      if (parsedDetails.answeredCorrectly) {
+      if(parsedDetails.mainTimeOut) {
+        setCorrectAnswer(parsedDetails.correctAnswer);
+        setQnActive(false);
+        setBuzzerActive(false);
+        return;
+      }
+      else if (parsedDetails.answeredCorrectly) {
         if (parsedDetails.team === teamName) {
           setAnswered(true);
           setShowConfetti(true);
@@ -105,6 +111,8 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
         setCorrectAnswer(parsedDetails.correctAnswer);
         setAnsweredCorrectly(true);
         setIsPaused(true);
+        setBuzzerActive(false);
+        setQnActive(false);
         setNotification(`${parsedDetails.team} answered correctly!`);
       } else {
         if (parsedDetails.team === teamName) setAnswered(true);
@@ -120,8 +128,10 @@ const QuizRoom = ({ socket, roomId, teamName, isHost, inGame, setInGame }) => {
           setBuzzerActive(false);
           setIsPaused(true);
           setCorrectAnswer(parsedDetails.correctAnswer);
-          setNotification(`${parsedDetails.team}'s timeout exceeded`);
+//          setNotification(`${parsedDetails.team}'s timeout exceeded`);
         }
+        if(parsedDetails.timeOut)
+          setNotification(`Timeout for ${parsedDetails.team}!`);
         else
           setNotification(`${parsedDetails.team} answered incorrectly!`);
       }
