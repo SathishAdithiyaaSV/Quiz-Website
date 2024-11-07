@@ -6,6 +6,7 @@ import CreateRoom from './screens/CreateRoom';
 import Game from './screens/Game';
 import HomePage from './screens/Homepage';
 import Profile from './screens/Profile';
+import ParticleSimulator from './screens/Particle';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -19,6 +20,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/create" element={<CreateRoom loggedIn={loggedIn}/>} />
             <Route path="/profile" element={<Profile />} /> 
+            <Route path="/particle" element={<ParticleSimulator />} /> 
            <Route path="/room/:roomId" element={<Game />} />
           </Routes>
         </div>
